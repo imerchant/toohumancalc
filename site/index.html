@@ -1,0 +1,168 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>Too Human Skill Calculator by Imran Merchant</title>
+<link rel="icon" href="icon32.png" type="image/png">
+<style type="text/css">
+p {color:#000000; font-family:arial; font-size:100%; font-weight:bold;}
+</style></head>
+<body bgcolor="#FFFFFF" link="#0000FF" vlink="#00CC00" alink="#FF0000" text="#000000">
+<p align="center">
+<u>Too Human Skill Calculator/Plotter</u> by <a href="mailto:imerchant@gmail.com" title="imerchant@gmail.com">Imran Merchant</a><br>
+<a href="index.html#Download">Download</a> <font color="red">*Updated August 7, 2009*</font> |
+ <a href="index.html#FAQ">FAQ</a> |
+ <a href="index.html#Change">Change log &amp; Previous Versions</a> |
+ <a href="mailto:imerchant@gmail.com" title="Contact me">Contact me</a></p>
+
+<p>This is the home of the <u>Too Human Skill Calculator</u>, a Java program designed to simulate the skill and alignment trees from the 
+Xbox 360 video game <a href="http://www.xbox.com/en-US/games/splash/t/toohuman/"><i>Too Human</i></a>, developed by <a href="http://www.siliconknights.com/">Silicon Knights</a> and published 
+by Microsoft. They retain all their trademarks and copyrights to it.</p>
+
+<p>The program can save the trees either as a file to open in the program, or as a PNG image, so you can share your builds.</p>
+
+<p align="center"><img src="calc.png" title="Too Human Skill Calculator version 4.0, in Windows 7" alt="Too Human Skill Calculator version 4.0, in Windows 7"></p>
+<a name="Download"></a><p>Current Version: 4.0 | <a href="TooHumanCalc.jar">Download</a> | <a href="READ_ME.txt">READ_ME.txt</a><br/>
+Last Update: August 07, 2009<br/>
+Contact: <a href="mailto:imerchant@gmail.com" title="Contact me">imerchant@gmail.com</a></p>
+
+<p><font color="red">REQUIRES <a href="http://www.java.com" title="Download Java!">JAVA RUNTIME ENVIRONMENT</a>. Java 6 is recommended, but will 
+probably work in Java5 or Java7. The program will run on any system with Java 
+installed, regardless of operating system.</font></p>
+
+<p>To run the program, <i>save</i> the JAR (<a href="TooHumanCalc.jar">TooHumanCalc.jar</a>); it will run like an 
+executable. If Java is installed correctly the program should run just fine. 
+Make sure to save the file as .jar; do <i>not</i> decompress/unzip the archive.</p>
+
+<p>Please report any bugs you encounter.</p>
+
+<p><u>Note to Internet Explorer users:</u><br>
+When saving the plotter (TooHumanCalc.jar), save the file as a .jar. IE 
+sometimes wants to change the filetype to .zip or something else. THE 
+PROGRAM WILL NOT WORK IN THIS CASE. The filetype must be .jar.</p>
+
+<br/><br/>
+
+<p><a name="FAQ"></a>FAQ</p>
+<hr width="100%">
+<p>No questions at the moment.</p>
+
+<br/><br/>
+
+<p><a name="Change"></a>Change log &amp; Previous Versions:</p>
+<hr width="100%">
+
+<p>Version 4.0 - Build date: August 07, 2009</p>
+<ul><li>New skill, class, and alignment icons courtesy of SK.net member Axeman87! This includes proper Human ruiner icons for all the classes. The new icons are a lot more detailed, with raised metal effects and shine. In the process, some incorrect or slightly wrong icons are fixed!</li>
+<li>Export now includes the (visible) notes field and information about how many points are used in the displayed tree.</li>
+<li>Skill icons now grey out with tree progression just like the numbers.</li>
+<li>New option: disable skill icons greying out with tree progression.</li>
+<li>New icons for items in the Options menu.</li>
+<li>Small presentation changes to the loading screen.</li>
+<li>Changed default start location of the main window from (0,0) to (40,40).</li>
+<li>Loading time now displayed in the status bar of the main window.</li>
+<li>Updated the About window: new information, and text boxes now automatically select all the text when clicked for easier copy/pasting.</li>
+<li>FindDialog: Unchecking "All" now deselects all the options.</li>
+<li>ClassPanel: Changed the text color of the Character points label to something readable. Can't believe I left it that bad for that long.</li>
+</ul>
+
+<p>Version 3.1 - Build date: June 15, 2009 - <a href="3_1/TooHumanCalc_3.1.jar">TooHumanCalc_3.1.jar</a></p>
+<ul><li>Rearranged some menu options, moving Export to PNG and Find-a-Skill to new "Tools" menu, along with the legacy open/save.</li>
+<li>Added the ability to hide the left Profile Pane (Ctrl+Alt+H), making the calc display better on non-widescreen monitors.</li>
+<li>New icons for the Commando, Defender, and Ruiner nodes from AKAtheDopeman of the SiliconKnights.net fora! Much better quality than the ones I had, and bringsthe whole interface to parity.</li>
+<li>Redesigned and updated the "About" dialog box with text boxes that allow copy/paste-ing of the e-mail and web addresses.</li>
+<li>Changed the stat bars to use multiple bars similar to the design of them in-game.</li>
+<li>Changed menu items in Class menu to use JCheckBoxMenuItems instead of JRadioButtonMenu Items. In Windows Classic and Windows XP, the RadioButtons used a really bad graphic for the bullet, while the CheckBoxs are much cleaner.</li></ul>
+
+<p>Version 3.0 - Build date: April 6, 2009 - <a href="3_0/TooHumanCalc_3.0.jar">TooHumanCalc_3.0.jar</a></p>
+<ul><li>Major UI revision: the class and alignment buttons on the left have been replaced by drop down menus.</li>
+<li>Minor UI revision: "Notes" field added to class trees. Use the space for detailed descriptions of your builds or for whatever. The contents of the text box save in the files along with the trees. The box is fully capable of copy/paste functions with the system clipboard, as well.</li>
+<li>Small change to FindDialog: addition of WindowFocusListener; when the FindDialog gets focus, focus moves to the search box JTextField always.</li>
+<li>Small change to the READ_ME dialog box: it now uses the same kind of text box as the notes text box on the trees, so the READ_ME dialog box now has full support for cut/copy/paste and all that. If you care for such a thing.</li>
+<li>Redefined setView() to be more useful; as of 2.8 the function of the method was spread out and not at all useful. I've consolidated its functions from open() and actionPerformed() into setView(), and it now does what it should have done all along.</li></ul>
+
+<p>Version 2.8 - Build date: Dec. 28, 2008 - <a href="2_8/TooHumanCalc_2.8.jar">TooHumanCalc_2.8.jar</a></p>
+<ul><li>Added the ability to filter the Find-a-Skill by class and alignment. Also did some rearrangement of the GUI on the Find-a-Skill dialog.</li>
+<li>Added some detail to the spiders and battle-cry descriptions, and fixed some small errors in a few other skill nodes.</li>
+<li>Added Tango icons to some menu options that were lacking them.</li>
+<li>Changed the READ_ME viewer frame to use the system LAF font, rather than whatever it wanted.</li></ul>
+
+<p>Version 2.7 - Build date: Nov. 28, 2008 - <a href="2_7/TooHumanCalc_2.7.jar">TooHumanCalc_2.7.jar</a></p>
+<ul><li>Added the ability to search for skills based on the title and description. 
+The find box pops up as a separate window, and the results are formatted 
+similarly to an older version of the calculator. Search results include 
+skill title, icon, and description, as well as the class or alignment 
+icon to make identification easier. Hit CTRL+F at any time to try it out!</li></ul>
+
+<p>Version 2.6 - Build date: Nov. 10, 2008 - <a href="2_6/TooHumanCalc_2.6.jar">TooHumanCalc_2.6.jar</a></p>
+<ul><li>More detail on the Alt+click box for changing skill points.</li>
+<li>New Feature: CTRL+E when viewing a tree allows for the export of the currently viewable trees as a PNG.</li>
+<li>Fixed the save feature on the files and PNG export to properly handle overwriting files and the like. The past implementation was lacking considerably.</li>
+<li>Updated some tango icons to more appropriate ones, as well as adding those for the export to PNG function.</li>
+<li>Added ability to view this Read Me within the program. It can also be found in the JAR archive.</li>
+<li>Bug fix: finally fixed phantom points showing up and not going away on a Reset. Had to do with how it was registering the clicks.</li>
+<li>Bug fix: Massive bug: a reset command is done when re-checking spider skills after lowering its parent below the pre-req. Don't know how long its been doing that, but seems a long time. Glad that's fixed now. The path restriction should work perfectly fine now.</li></ul>
+
+<p>Version 2.5 - <a href="2_5/TooHumanCalc_2.5.jar">TooHumanCalc_2.5.jar</a></p>
+<ul><li>Small bug fixes.</li>
+<li>Added some icons from the <a href="http://tango.freedesktop.org/Tango_Desktop_Project">Tango Desktop Project</a>. Really more an aesthetic choice.</li></ul>
+
+<p>Version 2.4 - <a href="2_4/TooHumanCalc_2.4.jar">TooHumanCalc_2.4.jar</a></p>
+<ul><li>Bugfix: Hitting "Reset" didn't clear some points, preventing full builds from being made. App had to be restarted to fix the problem. I changed how the reset function works, I believe it is fixed now.</li>
+<li>Updated the skill details using the retail version of the game. Commando tree, and both Alignment trees contain the heaviest changes.</li></ul>
+
+<p>Version 2.3 - <a href="2_3/TooHumanCalc_2.3.jar">TooHumanCalc_2.3.jar</a></p>
+<ul><li>Added progression bar to the trees. Shows percent of available points used. Can be hidden.</li>
+<li>New options menu. Only one so far, but hoping for more.</li>
+<li>Some optimization changes.</li>
+<li>Alt-clicks provide more input options. See help.</li></ul>
+
+<p>Version 2.2 - <a href="2_2/TooHumanCalc_2.2.jar">TooHumanCalc_2.2.jar</a></p>
+<ul><li>Updated with new character point total of 95. Also, the level calculator had to be re-written.</li>
+<li>New loading screen with loading details.</li>
+<li>Can now save/load a file with all five classes. Still supports single-class files.</li></ul>
+
+<p>Version 2.1 - <a href="2_1/TooHumanCalc_2.1.jar">TooHumanCalc_2.1.jar</a></p>
+<ul><li>Optimization and bugfixes.</li>
+<li>Small change to the Human ruiner node. Previous information based on <a href="http://toohuman.wikia.com/wiki/Main_Page">the wiki</a> was wrong. (That is, that the node increased Ruiner range and damage. It really only increases range.)</li></ul>
+
+<p>Version 2.0 - <a href="2_0/TooHumanCalc_2.0.jar">TooHumanCalc_2.0.jar</a></p>
+<ul><li>Redesigned layout very similar to the actual trees in-game.</li>
+<li>Updated all class and skill details (titles, stats, descriptions) based on the recently released Too Human demo.</li>
+<li>Should display much better on none-widescreen displays. I still recommend full-screening it, though.</li>
+<li>Click or use the mouse wheel to add or remove points from skills.</li>
+<li>No longer can you add more than 107 points to the trees.</li></ul>
+
+<p>Version 1.0 - <a href="1_0/TooHumanCalc_1.0.jar">TooHumanCalc_1.0.jar</a></p>
+<ul><li>BioEngineer stats now match up with the demo.</li>
+<li>Now works on Macs!! (Big thanks to Mark!)</li>
+<li>Class/Alignment icons now in a better place.</li>
+<li>Smaller left pane to allow more screen space for the trees.</li>
+<li>Revamped layout, using skill icons and more detailed descriptions from from the <a href="http://toohuman.wikia.com/wiki/Main_Page">Too Human wiki</a>.</li>
+<li>Class descriptions from the actual game!</li>
+<li>Class stat bars</li>
+<li>Class icons</li>
+<li>Alignment descriptions</li>
+<li>Total point allocation</li>
+<li>Level calculator</li>
+<li>Splash screen</li></ul>
+
+<p>Version 0.9 - <a href="0_9/TooHumanCalc_0.9.jar">TooHumanCalc_0.9.jar</a></p>
+<ul><li>All skill trees</li>
+<li>Both alignment trees</li>
+<li>Path restriction</li>
+<li>Save/load of character trees</li></ul>
+
+
+<br/><span style="color:#000000; font-family:arial; font-size:75%;"><i>Last Updated: Aug. 30, 2011</i><br>
+Copyright 2011 Imran Merchant</span>
+<!-- Google Analytics tracker code -->
+        <script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-6308513-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+      
+</body></html>
