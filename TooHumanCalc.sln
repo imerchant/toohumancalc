@@ -1,0 +1,54 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.16
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TooHumanCalc.Model", "src\TooHumanCalc.Model\TooHumanCalc.Model.csproj", "{B689695B-D937-492E-82C1-EE72CBFD6459}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TooHumanCalc.Api", "src\TooHumanCalc.Api\TooHumanCalc.Api.csproj", "{9F88622F-4E01-4804-84E1-9793D8CC9B31}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TooHumanCalc.Desktop", "src\TooHumanCalc.Desktop\TooHumanCalc.Desktop.csproj", "{F052252E-4E76-4F77-840A-F2A0654299CF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_tests", "_tests", "{B007B962-B03E-490B-A5E0-02EBC00520ED}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TooHumanCalc.Tests", "test\TooHumanCalc.Tests\TooHumanCalc.Tests.csproj", "{44F45408-1C82-4B99-94AD-806FD5B743C6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TooHumanCalc.Shared", "src\TooHumanCalc.Shared\TooHumanCalc.Shared.csproj", "{8C6638F3-AEE1-46D3-904E-B86F2F8EF37F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B689695B-D937-492E-82C1-EE72CBFD6459}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B689695B-D937-492E-82C1-EE72CBFD6459}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B689695B-D937-492E-82C1-EE72CBFD6459}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B689695B-D937-492E-82C1-EE72CBFD6459}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F88622F-4E01-4804-84E1-9793D8CC9B31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F88622F-4E01-4804-84E1-9793D8CC9B31}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F88622F-4E01-4804-84E1-9793D8CC9B31}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F88622F-4E01-4804-84E1-9793D8CC9B31}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F052252E-4E76-4F77-840A-F2A0654299CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F052252E-4E76-4F77-840A-F2A0654299CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F052252E-4E76-4F77-840A-F2A0654299CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F052252E-4E76-4F77-840A-F2A0654299CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{44F45408-1C82-4B99-94AD-806FD5B743C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{44F45408-1C82-4B99-94AD-806FD5B743C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{44F45408-1C82-4B99-94AD-806FD5B743C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{44F45408-1C82-4B99-94AD-806FD5B743C6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C6638F3-AEE1-46D3-904E-B86F2F8EF37F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C6638F3-AEE1-46D3-904E-B86F2F8EF37F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C6638F3-AEE1-46D3-904E-B86F2F8EF37F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C6638F3-AEE1-46D3-904E-B86F2F8EF37F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{44F45408-1C82-4B99-94AD-806FD5B743C6} = {B007B962-B03E-490B-A5E0-02EBC00520ED}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B7B53746-2FF2-4DD0-A96F-DAA1719316B7}
+	EndGlobalSection
+EndGlobal
