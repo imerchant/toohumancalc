@@ -9,5 +9,13 @@ namespace TooHumanCalc.Shared
 		{
 			return source?.Any() == true;
 		}
+
+		public static TValue TryGetValue<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key,
+			TValue defaultValue = default(TValue))
+		{
+			return dict != null && dict.TryGetValue(key, out TValue val)
+				? val
+				: defaultValue;
+		}
 	}
 }
