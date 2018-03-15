@@ -7,42 +7,140 @@ import java.text.DecimalFormat;
 
 class SkillBox extends JPanel implements ChangeListener, java.io.Serializable {
 	public static final long serialVersionUID = -3456235547L;
-	private String description;
+	private ImageIcon icon;
+	private String desc1,desc2,iconSrc,title;
 	private double multiplier;
 	private int maximum;
 	ActionListener dep;
 	private DecimalFormat d = new DecimalFormat("#00.00%");
+	private Color bg;
 	private JLabel percent = new JLabel(/*"Current: "+*/d.format(0.0*0.0)), maxLabel;
 	private JSpinner points = new JSpinner(new SpinnerNumberModel(0,0,10,1));
 //	private JComboBox points = new JComboBox(new Integer[]
 //		{0,1,2,3,4,5,6,7,8,9,10});
 //	private JButton plus, minus;
 	public SkillBox() {}
+	public SkillBox(ImageIcon i, String t, String d1, String d2, double multi) {
+		this(i,t,d1,d2,multi,10,Color.cyan);
+	}
+	public SkillBox(String iconSource, String t, String d1, String d2, double multi) {
+		this(iconSource,t,d1,d2,multi,10,Color.cyan);
+	}
+	public SkillBox(ImageIcon i, String t, String d1, String d2, double multi, int max, Color col) {
+		super(new BorderLayout());
+		icon = i;
+		title = t;
+		desc1 = d1;
+		desc2 = d2;
+		multiplier = multi;
+		maximum = max;
+		bg = col;
+		
+	//	setBorder(BorderFactory.createLineBorder(Color.black,2));
+		points = new JSpinner(new SpinnerNumberModel(0,0,maximum,1));
+		points.addChangeListener(this);
+		maxLabel = new JLabel("Max: "+d.format(maximum/100.0 * multiplier));
+	//	java.net.URL imgURL = getClass().getResource(iconSrc);
+	//	if(imgURL != null) icon = new ImageIcon(imgURL);
+		JLabel iconLabel = new JLabel(icon);
+		Box descBox = Box.createVerticalBox();
+		descBox.add(new JLabel("<html><u>"+title+"</u>"));
+		descBox.add(new JLabel(desc1));
+		descBox.add(new JLabel(desc2));
+		Box percBox = Box.createVerticalBox();
+		percBox.add(points);
+		percBox.add(percent);
+		percBox.add(maxLabel);
+		percBox.setToolTipText("Each level: +"+multiplier+"%");
+		
+		add(iconLabel,BorderLayout.WEST);
+		add(descBox,BorderLayout.CENTER);
+		add(percBox,BorderLayout.EAST);
+		
+		setBackground(bg);
+		setEnabled(false);
+	}
+	public SkillBox(String iconSource, String t, String d1, String d2, double multi, int max, Color col) {
+		super(new BorderLayout());
+		iconSrc = iconSource;
+		title = t;
+		desc1 = d1;
+		desc2 = d2;
+		multiplier = multi;
+		maximum = max;
+		bg = col;
+		
+		points = new JSpinner(new SpinnerNumberModel(0,0,maximum,1));
+		points.addChangeListener(this);
+		maxLabel = new JLabel("Max: "+d.format(maximum/100.0 * multiplier));
+		java.net.URL imgURL = getClass().getResource(iconSrc);
+		if(imgURL != null) icon = new ImageIcon(imgURL);
+		JLabel iconLabel = new JLabel(icon);
+		Box descBox = Box.createVerticalBox();
+		descBox.add(new JLabel("<html><u>"+title+"</u>"));
+		descBox.add(new JLabel(desc1));
+		descBox.add(new JLabel(desc2));
+		Box percBox = Box.createVerticalBox();
+		percBox.add(points);
+		percBox.add(percent);
+		percBox.add(maxLabel);
+		percBox.setToolTipText("Each level: +"+multiplier+"%");
+		
+		add(iconLabel,BorderLayout.WEST);
+		add(descBox,BorderLayout.CENTER);
+		add(percBox,BorderLayout.EAST);
+		
+		setBackground(bg);
+		setEnabled(false);
+	}
 	public SkillBox(String d, double m, Color col) {
 		this(d,m,col,10);
 	}
 	public SkillBox(String de, double m, Color col, int max) {
-		super(new BorderLayout());
+		this("imgs/Cyber1.png","title",de,null,m,max,col);
+	/*	super(new BorderLayout());
 		description = de;
 		multiplier = m;
 		maximum = max;
 		points = new JSpinner(new SpinnerNumberModel(0,0,maximum,1));
 		points.addChangeListener(this);
-		add(points,BorderLayout.WEST);
+	/*	add(points,BorderLayout.WEST);
 		add(new JLabel(description),BorderLayout.CENTER);
 		add(percent,BorderLayout.EAST);
-	/*	Box statBox = Box.createVerticalBox();
+		maxLabel = new JLabel("Max: "+d.format(maximum/100.0 * multiplier));
+	/* 	Box statBox = Box.createVerticalBox();
 		statBox.add(points);
 		statBox.add(percent);
-		statBox.add(maxLabel = new JLabel("Max: "+d.format(maximum/100.0 * multiplier)));
+		statBox.add(maxLabel);
 		add(statBox,BorderLayout.WEST);
 		Box descBox = Box.createVerticalBox();
 		descBox.add(new JLabel("[title]"));
 		descBox.add(new JLabel(description));
 		descBox.add(new JLabel("desc line 2"));
 		add(descBox,BorderLayout.CENTER);*/
+		
+	/*	java.net.URL imgURL = getClass().getResource("imgs\\Cyber1.png");
+		ImageIcon icon = null;
+		if(imgURL != null) icon = new ImageIcon(imgURL);
+		JLabel iconLabel = new JLabel(icon);
+		add(iconLabel,BorderLayout.WEST);
+		Box descBox = Box.createVerticalBox();
+		descBox.add(new JLabel("[title]"));
+		descBox.add(new JLabel(description));
+		descBox.add(new JLabel("desc line 2"));
+		add(descBox,BorderLayout.CENTER);
+		Box east = Box.createVerticalBox();
+	//	Box topeast = Box.createHorizontalBox();
+	//	topeast.add(percent);
+	//	topeast.add(points);
+	//	east.add(topeast);
+		east.add(points);
+		east.add(percent);
+		east.add(maxLabel);
+		add(east,BorderLayout.EAST);
+		
 		setBackground(col);
-		setEnabled(false);
+		setEnabled(false);*/
 	}
 	public SkillBox(String d, double m) {
 		this(d,m,Color.cyan,10);
@@ -94,9 +192,10 @@ class SkillBox extends JPanel implements ChangeListener, java.io.Serializable {
 	public boolean isEnabled() { return points.isEnabled(); }
 	public int getPoints() { return (Integer)points.getValue(); }
 	public void setPoints(int p) { points.setValue(p); }
-	public String getDescription() { return description; }
+	public String getDescription() { return desc1; }
+	public String getTitle() { return title; }
 	public boolean equals(Object box) {
 		if(!(box instanceof SkillBox)) return false;
-		return description.equals(((SkillBox)box).getDescription());
+		return title.equals(((SkillBox)box).getTitle());
 	}
 }
