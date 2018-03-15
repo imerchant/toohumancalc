@@ -43,13 +43,10 @@ public class Icons extends HashMap<String,ImageIcon> {
 			put("berserker"+k,new ImageIcon(c.getResource("imgs"+sep+"berserker"+k+".png")));
 			put("bioengineer"+k,new ImageIcon(c.getResource("imgs"+sep+"bioengineer"+k+".png")));
 			put("champion"+k,new ImageIcon(c.getResource("imgs"+sep+"champion"+k+".png")));
-	//		put("commando"+k,new ImageIcon(c.getResource("imgs"+sep+"commando"+k+".png")));
+			put("commando"+k,new ImageIcon(c.getResource("imgs"+sep+"commando"+k+".png")));
 			put("defender"+k,new ImageIcon(c.getResource("imgs"+sep+"defender"+k+".png")));
 		}
 		put("champion14",new ImageIcon(c.getResource("imgs"+sep+"champion14.png")));
-		
-		for(int k = 1; k <= 4; k++)
-			put("commando"+k,new ImageIcon(c.getResource("imgs"+sep+"commando"+k+".png")));
 	}
 	public ImageIcon get(String s) {
 		return super.get(s);
