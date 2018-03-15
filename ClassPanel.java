@@ -56,6 +56,7 @@ class ClassPanel extends JPanel implements ActionListener, java.io.Serializable,
 		topPanel.add(progress,BorderLayout.SOUTH);
 		topPanel.add(textBox,BorderLayout.CENTER);
 		JButton reset = new JButton("Reset");
+		reset.setIcon(icons.get("refresh"));
 		reset.addActionListener(this);
 		topPanel.add(reset,BorderLayout.EAST);
 		add(topPanel,BorderLayout.NORTH);

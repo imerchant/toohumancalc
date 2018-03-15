@@ -23,7 +23,7 @@ public class TooHumanCalc extends JFrame implements ActionListener, java.io.Seri
 	private JLabel specLabel;
 	private Icons icons;
 	private boolean paintString = false, borderPainted = true;
-	private static final String version = "v2.4";
+	private static final String version = "v2.5";
 	private String[] classList = {"Berserker",
 								  "Defender",
 								  "Champion",
@@ -35,7 +35,7 @@ public class TooHumanCalc extends JFrame implements ActionListener, java.io.Seri
 		super("Too Human Character Plotter "+version);
 	//	long time1 = System.nanoTime();
 		UIManager.LookAndFeelInfo[] info = UIManager.getInstalledLookAndFeels();
-		String classname = /**info[1].getClassName();//*/ UIManager.getSystemLookAndFeelClassName();
+		String classname = /**info[4].getClassName();//*/ UIManager.getSystemLookAndFeelClassName();
 		try{UIManager.setLookAndFeel(classname);}catch(Exception e){}
 		
 	/*	String lafs[] = new String[info.length];
@@ -110,18 +110,22 @@ public class TooHumanCalc extends JFrame implements ActionListener, java.io.Seri
 		JMenu fileMenu = new JMenu("File");
 		fileMenu.setMnemonic(KeyEvent.VK_F);
 		JMenu openMenu = new JMenu("Open");
+		openMenu.setIcon(icons.get("folder"));
 		openMenu.setMnemonic(KeyEvent.VK_O);
 		fileMenu.add(openMenu);
 		JMenu saveMenu = new JMenu("Save");
+		saveMenu.setIcon(icons.get("floppy"));
 		saveMenu.setMnemonic(KeyEvent.VK_S);
 		fileMenu.add(saveMenu);
 		JMenuItem openNew = new JMenuItem("Open...",KeyEvent.VK_O);
+		openNew.setIcon(icons.get("folder open"));
 		openNew.setAccelerator(KeyStroke.getKeyStroke("ctrl O"));
 		openMenu.add(openNew).addActionListener(this);
 		JMenuItem openItem = new JMenuItem("Open single...",KeyEvent.VK_P);
 		openItem.setAccelerator(KeyStroke.getKeyStroke("ctrl alt O"));
 		openMenu.add(openItem).addActionListener(this);
 		JMenuItem saveNew = new JMenuItem("Save as...",KeyEvent.VK_S);
+		saveNew.setIcon(icons.get("doc save"));
 		saveNew.setAccelerator(KeyStroke.getKeyStroke("ctrl S"));
 		saveMenu.add(saveNew).addActionListener(this);
 		JMenuItem saveItem = new JMenuItem("Save single...",KeyEvent.VK_A);
@@ -129,6 +133,7 @@ public class TooHumanCalc extends JFrame implements ActionListener, java.io.Seri
 		saveMenu.add(saveItem).addActionListener(this);
 		fileMenu.addSeparator();
 		JMenuItem exitItem = new JMenuItem("Exit",KeyEvent.VK_X);
+		exitItem.setIcon(icons.get("stop"));
 		exitItem.setAccelerator(KeyStroke.getKeyStroke("alt X"));
 		fileMenu.add(exitItem).addActionListener(this);
 		menubar.add(fileMenu);
@@ -144,10 +149,13 @@ public class TooHumanCalc extends JFrame implements ActionListener, java.io.Seri
 		JMenu helpMenu = new JMenu("Help");
 		helpMenu.setMnemonic(KeyEvent.VK_H);
 		JMenuItem helpItem = new JMenuItem("Help",KeyEvent.VK_H);
+		helpItem.setIcon(icons.get("help"));
 		helpItem.setAccelerator(KeyStroke.getKeyStroke("F1"));
 		helpMenu.add(helpItem).addActionListener(this);
 		helpMenu.addSeparator();
-		helpMenu.add(new JMenuItem("About",KeyEvent.VK_A)).addActionListener(this);
+		JMenuItem aboutItem = new JMenuItem("About",KeyEvent.VK_A);
+		aboutItem.setIcon(icons.get("icon20"));
+		helpMenu.add(aboutItem).addActionListener(this);
 		menubar.add(helpMenu);
 		setJMenuBar(menubar);
 		loadBar.setValue(++progress);
@@ -193,6 +201,7 @@ public class TooHumanCalc extends JFrame implements ActionListener, java.io.Seri
 		}
 		classMenu.addSeparator();
 		JMenuItem resetItem = new JMenuItem("Reset",KeyEvent.VK_R);
+		resetItem.setIcon(icons.get("refresh"));
 		resetItem.setAccelerator(KeyStroke.getKeyStroke("F5"));
 		resetItem.addActionListener(this);
 		classMenu.add(resetItem);
@@ -504,8 +513,9 @@ public class TooHumanCalc extends JFrame implements ActionListener, java.io.Seri
 				"Too Human trademarks retained by Silicon Knights and Microsoft.\n\n"+
 				"Special thanks to maawdawg, tmunee, and MarkZ3 \nof the excellent TooHuman.net forums.\n\n"+
 				"Skill icons (partly) courtesy of the equally awesome \nToo Human wiki (http://toohuman.wikia.com).\n\n"+
+				"Some other icons part of the Tango Desktop Project\n(http://tango.freedesktop.org/Tango_Desktop_Project).\n\n"+
 				"Skill descriptions and stats taken from the retail version of Too Human.",
-				"About Too Human Character Plotter "+version,JOptionPane.INFORMATION_MESSAGE,icons.get("Icon"));
+				"About Too Human Character Plotter "+version,JOptionPane.INFORMATION_MESSAGE,icons.get("icon"));
 		} else if(name.equals("Help")) {
 			JOptionPane.showMessageDialog(this,"Select a class and alignment to view the trees.\n\n"+
 				"To add/remove points from a skill node:\n"+
@@ -516,7 +526,7 @@ public class TooHumanCalc extends JFrame implements ActionListener, java.io.Seri
 				"Use \"single\" for legacy (below v2.2) plotter files.\n"+
 				"New files save all classes, older files only contain one class.",
 				"Help: Too Human Character Plotter "+version,JOptionPane.INFORMATION_MESSAGE,
-				icons.get("Icon"));
+				icons.get("icon"));
 		} else if(name.equals("Reset")) {
 			classPanel.reset();
 		} else if(name.equals("Show progression bar")) {
