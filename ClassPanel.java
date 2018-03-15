@@ -15,10 +15,10 @@ class ClassPanel extends JPanel implements ActionListener, java.io.Serializable,
 	private JSplitPane splitpane;
 	private JPanel trees,blank;
 	private HashMap<String,AlignPanel> cache;
-	private SkillBox[][] skills;
+	private SkillBox[][] skills = new SkillBox[0][0];
 	private AlignPanel alignTree;
 	private Icons icons;
-	private boolean built = false;
+	private boolean built = false, iconAlways = false;
 	private int total = 0;
 	private JFileChooser saveImage;
 	private ExtFilefilter filter;
@@ -93,10 +93,12 @@ class ClassPanel extends JPanel implements ActionListener, java.io.Serializable,
 		for(int k = 0; k < rows; k++)
 			for(int j = 0; j < 3; j++)
 				skills[k][j] = new SkillBox();
-		skills[0][2] = new SkillBox(icons.get("ruiner"),"Human Spiritual Ruiner","Unleash your devestating Human spiritual ruiner.",
-			"Ruiners require 1 combo level to activate.","Increases Ruiner radius.",100,5,Color.lightGray);
+		
 		int off = 0;
 		if(classString.equals("Berserker")) {
+			skills[0][2] = new SkillBox(icons.get("berserker0"),"Hunger of the Bear (Spiritual Ruiner)","Baldur summons the Berserker's bear",
+				"spirit, shredding all enemies in its range.","Increases Ruiner radius.",100,5,Color.lightGray);
+			
 			skills[1][1] = new SkillBox(icons.get("berserker1"),"A Capacity for Rage (Group Skill)","Level 1-9: Increases combo meter growth rate.",
 				"Level 10: Additional combo level.",11,10,GREEN);
 			
@@ -126,6 +128,9 @@ class ClassPanel extends JPanel implements ActionListener, java.io.Serializable,
 			skills[5][2] = new SkillBox(icons.get("berserker13"),"Warrior of the Twinned-Claw","Increases Dual-Wield Weapon damage.",
 				null,3,10,CYAN);
 		} else if(classString.equals("BioEngineer")) {
+			skills[0][2] = new SkillBox(icons.get("bioengineer0"),"Valkyrie's Blessing (Spiritual Ruiner)","Baldur summons a Valkyrie to his side, unleashing her",
+				"spirit to leech enemies' health to restore his own.","Increases Ruiner radius.",100,5,Color.lightGray);
+			
 			skills[1][1] = new SkillBox(icons.get("bioengineer1"),"Idunn's Touch (Group Skill)","Increases health regeneration over time.",
 				null,.1,8,GREEN);
 			
@@ -156,6 +161,9 @@ class ClassPanel extends JPanel implements ActionListener, java.io.Serializable,
 			skills[5][2] = new SkillBox(icons.get("bioengineer13"),"Electrified Blade","Increases chance of inflicting Lightning",
 				"damage during melee attacks.",1,10,CYAN);
 		} else if(classString.equals("Champion")) {
+			skills[0][2] = new SkillBox(icons.get("champion0"),"Raven Call (Spiritual Ruiner)","Baldur's enemies are buffeted by the wings",
+				"of ravens, knocking them into the air.","Increases Ruiner radius.",100,5,Color.lightGray);
+			
 			skills[1][1] = new SkillBox(icons.get("champion1"),"Unerring Strike (Group Skill)","Increases chance of critical strikes.",
 				null,.5,10,GREEN);
 			
@@ -188,6 +196,9 @@ class ClassPanel extends JPanel implements ActionListener, java.io.Serializable,
 			
 			off = 1;
 		} else if(classString.equals("Commando")) {
+			skills[0][2] = new SkillBox(icons.get("commando0"),"Helm Reddener (Spiritual Ruiner)","The Wolf's aggression takes hold, dealing",
+				"damage and preventing enemy movement.","Increases Ruiner radius.",100,5,Color.lightGray);
+			
 			skills[1][1] = new SkillBox(icons.get("commando1"),"Wreaker of Mead Halls (Group Skill)","Increases damage and radius of all",
 				"secondary fire.",2.5,10,GREEN);
 			
@@ -218,6 +229,9 @@ class ClassPanel extends JPanel implements ActionListener, java.io.Serializable,
 			skills[5][2] = new SkillBox(icons.get("commando13"),"Gift of Gungnir","Increases Rifle damage.",
 				null,3,10,CYAN);
 		} else if(classString.equals("Defender")) {
+			skills[0][2] = new SkillBox(icons.get("defender0"),"Valiant's Unstable Hand (Spiritual Ruiner)","A Valiant's battle rage is harnessed,",
+				"stunning and damaging nearby enemies.","Increases Ruiner radius.",100,5,Color.lightGray);
+			
 			skills[1][1] = new SkillBox(icons.get("defender1"),"Defender's Resilience (Group Skill)","Decreases the amount of damage taken.",
 				null,.5,10,GREEN);
 			
@@ -281,7 +295,7 @@ class ClassPanel extends JPanel implements ActionListener, java.io.Serializable,
 		blank.setPreferredSize(new Dimension(pref.width+20,pref.height/2));
 		
 		details = new JScrollPane(blank);
-		details.setBorder(BorderFactory.createTitledBorder("Skill details"));
+		details.setBorder(BorderFactory.createTitledBorder("Details"));
 		JPanel crazyIdea = new JPanel(new GridLayout(2,0));
 	//	crazyIdea.setPreferredSize(new Dimension(pref.width+20,pref.height));
 	//	crazyIdea.setBorder(BorderFactory.createTitledBorder("Skill details"));
@@ -335,6 +349,7 @@ class ClassPanel extends JPanel implements ActionListener, java.io.Serializable,
 			alignTree = cache.get(alignString);
 		}
 		trees.add(alignTree,BorderLayout.EAST);
+		alignTree.setSkillIconAlwaysEnabled(iconAlways);
 		alignTree.setVisible(true);
 		updateUI();
 		updatePoints();
@@ -433,10 +448,10 @@ class ClassPanel extends JPanel implements ActionListener, java.io.Serializable,
 		progress.setValue(total);
 		if(total == 95)  {
 			pointsLabel.setText("95/95  **TOTAL REACHED**");
-			pointsLabel.setForeground(GREEN);
+			pointsLabel.setForeground(new Color(0,150,0));
 			levelLabel.setText("Level: 50");
 			levelLabel.setForeground(getForeground());
-			levelLabel.setForeground(GREEN);
+			levelLabel.setForeground(new Color(0,150,0));
 			error.setVisible(false);
 		} else if(total > 95) {
 			error.setVisible(true);
@@ -481,6 +496,13 @@ class ClassPanel extends JPanel implements ActionListener, java.io.Serializable,
 		return export;
 	}
 	public boolean exportAsPNG(Component parent) {
+		Box det = Box.createVerticalBox();
+		det.add(new JLabel("Character points used: "+pointsLabel.getText()));
+		det.add(new JLabel(levelLabel.getText()));
+		details.setViewportView(det);
+		revalidate();
+		details.repaint();
+		repaint();
 		if(saveImage.showSaveDialog(parent) == JFileChooser.APPROVE_OPTION) {
 			File file = saveImage.getSelectedFile();
 			if(!filter.acceptFile(file))
@@ -491,13 +513,13 @@ class ClassPanel extends JPanel implements ActionListener, java.io.Serializable,
 					JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,
 					icons.get("dialog warning"),choices,choices[1]);
 				if(choice == 2 || choice == JOptionPane.CLOSED_OPTION) return false;
-				if(choice == 1) return exportAsPNG(this);
+				if(choice == 1) return exportAsPNG(parent);
 			}
 			try {
-				Dimension treesSize = trees.getSize();
+				Dimension treesSize = splitpane.getSize();//trees.getSize();
 				BufferedImage image = new BufferedImage(treesSize.width,treesSize.height,BufferedImage.TYPE_INT_RGB);
 				Graphics2D g = image.createGraphics();
-				trees.paint(g);
+				splitpane.paint(g);//trees.paint(g);
 				g.dispose();
 				ImageIO.write(image,"png",file);
 				return true;
@@ -590,5 +612,12 @@ class ClassPanel extends JPanel implements ActionListener, java.io.Serializable,
 	}
 	public SkillBox[][] getSkillBoxes() {
 		return skills;
+	}
+	public void setSkillIconAlwaysEnabled(boolean b) {
+		iconAlways = b;
+		for(int k = 0; k < skills.length; k++)
+			for(int j = 0; j < skills[k].length; j++)
+				skills[k][j].setIconAlwaysEnabled(iconAlways);
+		if(alignTree != null) alignTree.setSkillIconAlwaysEnabled(iconAlways);
 	}
 }

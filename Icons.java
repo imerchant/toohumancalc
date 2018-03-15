@@ -3,17 +3,15 @@ import javax.swing.*;
 import java.io.File;
 
 public class Icons extends HashMap<String,ImageIcon> {
-//	private HashMap<String,ImageIcon> icons = new HashMap<String,ImageIcon>();
 	private static final long serialVersionUID = 1209340945L;
-	private final String sep = "/";//File.separator;
 	public Icons() { super(); }
 	public void load() {
 		Class<? extends Icons> c = getClass();
-		put("Berserker",new ImageIcon(c.getResource("imgs/berserker_icon.png")));
+	/*	put("Berserker",new ImageIcon(c.getResource("imgs/berserker_icon.png")));
 		put("BioEngineer",new ImageIcon(c.getResource("imgs/bioengineer_icon.png")));
 		put("Champion",new ImageIcon(c.getResource("imgs/champion_icon.png")));
 		put("Commando",new ImageIcon(c.getResource("imgs/commando_icon.png")));
-		put("Defender",new ImageIcon(c.getResource("imgs/defender_icon.png")));
+		put("Defender",new ImageIcon(c.getResource("imgs/defender_icon.png")));*/
 		
 		put("Berserker_small",new ImageIcon(c.getResource("imgs/berserker_icon_small.png")));
 		put("BioEngineer_small",new ImageIcon(c.getResource("imgs/bioengineer_icon_small.png")));
@@ -43,7 +41,7 @@ public class Icons extends HashMap<String,ImageIcon> {
 			put("Cyber"+k,new ImageIcon(c.getResource("imgs/Cyber"+k+".png")));
 			put("Human"+k,new ImageIcon(c.getResource("imgs/Human"+k+".png")));
 		}
-		for(int k = 1; k <= 13; k++) {
+		for(int k = 0; k <= 13; k++) {
 			put("berserker"+k,new ImageIcon(c.getResource("imgs/berserker"+k+".png")));
 			put("bioengineer"+k,new ImageIcon(c.getResource("imgs/bioengineer"+k+".png")));
 			put("champion"+k,new ImageIcon(c.getResource("imgs/champion"+k+".png")));
@@ -57,7 +55,7 @@ public class Icons extends HashMap<String,ImageIcon> {
 		put("stop",new ImageIcon(c.getResource("imgs/tango/process-stop.png")));
 		put("folder",new ImageIcon(c.getResource("imgs/tango/folder.png")));
 		put("folder open",new ImageIcon(c.getResource("imgs/tango/folder-open.png")));
-		put("floppy",new ImageIcon(c.getResource("imgs/tango/media-floppy.png")));
+	//	put("floppy",new ImageIcon(c.getResource("imgs/tango/media-floppy.png")));
 		put("doc save",new ImageIcon(c.getResource("imgs/tango/document-save.png")));
 		put("doc save as",new ImageIcon(c.getResource("imgs/tango/document-save-as.png")));
 		put("log out",new ImageIcon(c.getResource("imgs/tango/system-log-out.png")));
@@ -73,6 +71,8 @@ public class Icons extends HashMap<String,ImageIcon> {
 		put("delete",new ImageIcon(c.getResource("imgs/tango/edit-delete.png")));
 		put("select all",new ImageIcon(c.getResource("imgs/tango/edit-select-all.png")));
 		put("view full",new ImageIcon(c.getResource("imgs/tango/view-fullscreen.png")));
+		put("image missing",new ImageIcon(c.getResource("imgs/tango/image-missing.png")));
+		put("image loading",new ImageIcon(c.getResource("imgs/tango/image-loading.png")));
 	}
 	public ImageIcon get(String s) {
 		return super.get(s);

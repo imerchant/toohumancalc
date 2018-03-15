@@ -1,5 +1,5 @@
 Too Human Skill Calculator by Imran Merchant
-Current Version: 3.1
+Current Version: 4.0
 Contact: imerchant@gmail.com
 http://pyreflies.nu/hench/TooHuman
 
@@ -30,6 +30,25 @@ PROGRAM WILL NOT WORK IN THIS CASE. The filetype must be .jar.
 ==========
 Changelog:
 ==========
+
+Version 4.0
+* New skill, class, and alignment icons courtesy of SK.net member Axeman87!
+  This includes proper Human ruiner icons for all the classes. The new icons are
+  a lot more detailed, with raised metal effects and shine. In the process, some
+  incorrect or slightly wrong icons are fixed!
+* Export now includes the (visible) notes field and information about how many
+  points are used in the displayed tree.
+* Skill icons now grey out with tree progression just like the numbers.
+* New option: disable skill icons greying out with tree progression.
+* New icons for items in the Options menu.
+* Small presentation changes to the loading screen.
+* Changed default start location of the main window from (0,0) to (40,40).
+* Loading time now displayed in the status bar of the main window.
+* Updated the About window: new information, and text boxes now automatically
+  select all the text when clicked for easier copy/pasting.
+* FindDialog: Unchecking "All" now deselects all the options.
+* ClassPanel: Changed the text color of the Character points label to something
+  readable. Can't believe I left it that bad for that long.
 
 Version 3.1
 * Rearranged some menu options, moving Export to PNG and Find-a-Skill to new

@@ -173,9 +173,9 @@ class FindDialog extends JFrame implements ActionListener,ListCellRenderer,Windo
 		} else if(name.equals("Close")) {
 			setVisible(false);
 		} else if(e.getSource() instanceof JCheckBox) {
-			if(name.equals("All") && restrictions[0].isSelected()) {
+			if(name.equals("All")) {
 				for(int k = 1; k < restrictions.length; k++)
-					restrictions[k].setSelected(true);
+					restrictions[k].setSelected(restrictions[0].isSelected());
 			} else if(!name.equals("All")) {
 				restrictions[0].setSelected(allSelected(1,7));
 			}
@@ -197,25 +197,25 @@ class FindDialog extends JFrame implements ActionListener,ListCellRenderer,Windo
 		JPanel panel = (JPanel)value;
 		if(selected) {
 			panel.setOpaque(index != -1);
-            panel.setBackground(list.getSelectionBackground());
-            panel.setForeground(list.getSelectionForeground());
-        } else {
-        	panel.setOpaque(false);
-            panel.setBackground(list.getBackground());
-            panel.setForeground(list.getForeground());
-        }
+			panel.setBackground(list.getSelectionBackground());
+			panel.setForeground(list.getSelectionForeground());
+		} else {
+			panel.setOpaque(false);
+			panel.setBackground(list.getBackground());
+			panel.setForeground(list.getForeground());
+		}
 	//	panel.setOpaque(selected && index != -1);
 		return panel;
 	}
 	private JPanel getSkillPanel(ImageIcon classIcon, SkillBox skill) {
 		JPanel skillPanel = new JPanel(new BorderLayout());
-		skillPanel.add(new JLabel(classIcon),BorderLayout.WEST);
+		skillPanel.add(new JLabel(classIcon),BorderLayout.EAST);
 		Box box = Box.createVerticalBox();
 		box.add(new JLabel("<html><u>"+skill.getTitle()+"</u>"));
 		box.add(new JLabel(skill.getDescription()));
 		box.add(new JLabel(skill.getDescriptionSecondLine()));
 		skillPanel.add(box,BorderLayout.CENTER);
-		skillPanel.add(new JLabel(skill.getIcon()),BorderLayout.EAST);
+		skillPanel.add(new JLabel(skill.getIcon()),BorderLayout.WEST);
 		return skillPanel;
 	}
 	public void pack() {

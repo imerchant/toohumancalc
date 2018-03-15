@@ -1,34 +1,35 @@
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.event.*;
 import java.util.*;
 import java.text.DecimalFormat;
 import java.io.*;
 
-public class TooHumanCalc extends JFrame implements ActionListener,Serializable, ListCellRenderer {
+public class TooHumanCalc extends JFrame implements ActionListener,Serializable, ListCellRenderer, ChangeListener {
 	public static final long serialVersionUID = -86546345547L;
-	private ClassPanel classPanel;
-	private FindDialog find;
-	private JSplitPane splitpane;
-	private HashMap<String,JCheckBoxMenuItem> classMenuButtons,alignbuttons;
-	private JCheckBoxMenuItem clearItem;
 	private ButtonGroup aligngroup,classMenuGroup;
+	private ClassPanel classPanel;
+	private DecimalFormat format = new DecimalFormat("##.000"), perc = new DecimalFormat("##%");
+	private ExtFilefilter filter;
+	private FindDialog find;
+	private HashMap<String,ClassPanel> cache;
+	private HashMap<String,JCheckBoxMenuItem> classMenuButtons,alignbuttons;
+	private Icons icons;
+	private JCheckBoxMenuItem clearItem, showProg, showItem, iconAlways;
 	private JComboBox classCombo,alignCombo;
+	private JComponent about,profile;
+	private JFileChooser save,open;
+	private JFrame readFrame;
+	private JLabel progLabel;
+	private JProgressBar hitBar, meleeBar, ballisticsBar, armorBar, loadBar,
+						 hits[], melees[], ballistics[], armors[];
+	private JSplitPane splitpane;
 	private NotesArea classdesc, aligndesc;
 	private NameField nameField;
-	private JFileChooser save,open;
-	private HashMap<String,ClassPanel> cache;
-	private ExtFilefilter filter;
-	private JProgressBar hitBar,meleeBar,ballisticsBar,armorBar;
-	private JProgressBar[] hits, melees, ballistics, armors;
-	private JCheckBoxMenuItem showProg, showItem;
-//	private JLabel specLabel;
-	private Icons icons;
-	private JFrame readFrame;
-	private JComponent about,profile;
 	private boolean paintString = false, borderPainted = true, showPanel = false, multibar = true;
 	private final String userdir = System.getProperty("user.dir");
-	private static final String version = "v3.2";
+	private static final String version = "v4.0";
 	private String[] classList = {"Berserker",
 								  "Defender",
 								  "Champion",
@@ -44,7 +45,7 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 		String classname = /**info[4].getClassName();//*/ UIManager.getSystemLookAndFeelClassName();
 		try{UIManager.setLookAndFeel(classname);}catch(Exception e){}
 				
-/*	*	String lafs[] = new String[info.length];
+/*	*/	String lafs[] = new String[info.length];
 		for(int k = 0; k < lafs.length; k++)
 			lafs[k] = info[k].getClassName();
 		String option = (String)JOptionPane.showInputDialog(null,
@@ -72,36 +73,46 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 			dialog.setIconImage(getToolkit().createImage(iconURL));
 		}
 		Box loadingBar = Box.createHorizontalBox();
-		JProgressBar loadBar = new JProgressBar(SwingConstants.HORIZONTAL,0,18);
+		loadBar = new JProgressBar(SwingConstants.HORIZONTAL,0,18);
 		int progress = 0;
 		loadBar.setIndeterminate(true);
 		loadBar.setBorderPainted(true);
-		loadBar.setStringPainted(true);
+		loadBar.addChangeListener(this);
+	//	loadBar.setStringPainted(true);
 		Box labelPanel = Box.createHorizontalBox();
 		labelPanel.add(Box.createHorizontalStrut(25));
 		labelPanel.add(loadingstatus);
 		labelPanel.add(loadingLabel);
+		loadingBar.add(Box.createHorizontalStrut(15));
 		loadingBar.add(loadBar);
+		loadingBar.add(Box.createHorizontalStrut(15));
+		progLabel = new JLabel("0%");
+		loadingBar.add(progLabel);
 		loadingBar.add(Box.createHorizontalStrut(15));
 		JButton cancelButton = new JButton("Cancel");
 		cancelButton.setFocusPainted(false);
 		((JButton)loadingBar.add(cancelButton)).addActionListener(this);
+		loadingBar.add(Box.createHorizontalStrut(15));
 		loadingPanel.add(title,BorderLayout.NORTH);
 		loadingPanel.add(labelPanel,BorderLayout.CENTER);
 		loadingPanel.add(loadingBar,BorderLayout.SOUTH);
 		dialog.setContentPane(loadingPanel);
 	//	dialog.setSize(new Dimension(225,100));
 		dialog.pack();
+		loadBar.setSize(new Dimension(loadBar.getWidth(),loadBar.getHeight()+40));
+	//	dialog.pack();
 		Dimension size = dialog.getSize();
-		dialog.setSize((int)size.getWidth()+25,(int)size.getHeight());
+	//	dialog.setSize((int)size.getWidth()+25,(int)size.getHeight());
 		dialog.setLocationRelativeTo(null);
-		dialog.setVisible(true);
 		dialog.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		dialog.setVisible(true);
 		loadBar.setIndeterminate(false);
 		
 		loadingLabel.setText("Loading icons...");
+		long iconTime1 = System.nanoTime();
 		icons = new Icons();
 		icons.load();
+		long iconTime2 = System.nanoTime();
 		loadBar.setValue(++progress);
 		
 		loadingLabel.setText("Building filechoosers...");
@@ -147,14 +158,19 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 		menubar.add(classMenu);
 		JMenu optionsMenu = new JMenu("Options");
 		optionsMenu.setMnemonic(KeyEvent.VK_O);
-		showProg = new JCheckBoxMenuItem("Show progression bar",true);
+		showProg = new JCheckBoxMenuItem("Show progression bar",icons.get("image loading"),true);
 		showProg.setMnemonic(KeyEvent.VK_P);
-		showProg.setAccelerator(KeyStroke.getKeyStroke("ctrl alt P"));
+		showProg.setAccelerator(KeyStroke.getKeyStroke("ctrl P"));
 		optionsMenu.add(showProg).addActionListener(this);
 		showItem = new JCheckBoxMenuItem("Show profile pane",icons.get("view full"),true);
 		showItem.setMnemonic(KeyEvent.VK_H);
 		showItem.setAccelerator(KeyStroke.getKeyStroke("ctrl alt H"));
 		optionsMenu.add(showItem).addActionListener(this);
+		iconAlways = new JCheckBoxMenuItem("Skill icons always enabled",icons.get("image missing"),false);
+		iconAlways.setMnemonic(KeyEvent.VK_I);
+		iconAlways.setDisplayedMnemonicIndex(6);
+		iconAlways.setAccelerator(KeyStroke.getKeyStroke("ctrl I"));
+		optionsMenu.add(iconAlways).addActionListener(this);
 		menubar.add(optionsMenu);
 		JMenu toolsMenu = new JMenu("Tools");
 		toolsMenu.setMnemonic(KeyEvent.VK_T);
@@ -225,6 +241,8 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 		classMenuButtons = new HashMap<String,JCheckBoxMenuItem>(classList.length);
 		JPanel buttonsPanel = new JPanel(new GridLayout(1,0));
 		buttonsPanel.setBorder(BorderFactory.createTitledBorder("Class"));
+		classCombo = new JComboBox();
+		classCombo.addItem(" ");
 		for(int k = 0; k < classList.length; k++) {
 			String name = classList[k];
 			JCheckBoxMenuItem j = new JCheckBoxMenuItem(name,icons.get(name+"_small"));
@@ -234,11 +252,8 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 			classMenuButtons.put(name,j);
 			classMenuGroup.add(j);
 			classMenu.add(j);
+			classCombo.addItem(name);
 		}
-		classCombo = new JComboBox();
-		classCombo.addItem(" ");
-		for(String c: classList)
-			classCombo.addItem(c);
 		classCombo.setRenderer(this);
 		classCombo.addActionListener(this);
 		buttonsPanel.add(classCombo);
@@ -251,6 +266,8 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 		alignbuttons = new HashMap<String,JCheckBoxMenuItem>(alignList.length);
 		JPanel alignButtonPanel = new JPanel(new GridLayout(1,0));
 		alignButtonPanel.setBorder(BorderFactory.createTitledBorder("Alignment"));
+		alignCombo = new JComboBox();
+		alignCombo.addItem("  ");
 		for(int k = 0; k < alignList.length; k++) {
 			String name = alignList[k];
 			JCheckBoxMenuItem j = new JCheckBoxMenuItem(name,icons.get(name+"_small"));
@@ -260,12 +277,9 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 			alignbuttons.put(name,j);
 			aligngroup.add(j);
 			classMenu.add(j);
+			alignCombo.addItem(name);
 		}
 		aligngroup.add(clearItem = new JCheckBoxMenuItem("clear"));
-		alignCombo = new JComboBox();
-		alignCombo.addItem("  ");
-		for(String a: alignList)
-			alignCombo.addItem(a);
 		alignCombo.setRenderer(this);
 		alignCombo.addActionListener(this);
 		alignButtonPanel.add(alignCombo);
@@ -283,7 +297,6 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 		loadBar.setValue(++progress);
 		
 		loadingLabel.setText("Building class stats GUI...");
-		
 		JPanel classStats = new JPanel(new BorderLayout());
 		JPanel classLabels = new JPanel(new GridLayout(4,0));
 		JPanel classBars = new JPanel(new GridLayout(4,0));
@@ -429,7 +442,7 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		pack();
-		setLocation(0,0);
+		setLocation(40,40);
 		loadBar.setValue(++progress);
 		
 		if(openFile) {
@@ -438,7 +451,6 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 			if(filter.acceptFile(f))
 				open(false,f);
 		}
-		
 		loadingLabel.setText("Loading complete!");
 		dialog.setVisible(false);
 		dialog.dispose();
@@ -447,8 +459,10 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 		nameField.requestFocusInWindow();
 		
 		long time2 = System.nanoTime();
+		System.out.println("Icon load time: " + (iconTime2-iconTime1)/1000000000.0);  
 		System.out.println("Cache load time: " + (cachetime2-cachetime1)/1000000000.0);
 		System.out.println("Full load time: " + (time2-time1)/1000000000.0);
+		status.setText(status.getText() + " (Startup time: " + format.format((time2-time1)/1000000000.0) + "s)");
 	/*	try {
 			Robot robot = new Robot();
 			robot.keyPress(KeyEvent.VK_CONTROL);
@@ -531,15 +545,13 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 				about.add(new JLabel("Silicon Knights and Microsoft."));
 				about.add(new JLabel(" "));
 				about.add(new JLabel("<html>Special thanks to <b>maawdawg</b>, <b>tmunee</b>, <b>MarkZ3</b>,"));
-				about.add(new JLabel("<html>and <b>AKAtheDopeman</b> of the excellent SiliconKnights.net"));
+				about.add(new JLabel("<html>and <b>AKAtheDopeman</b> of the excellent SiliconKnights.net."));
 				NameField sknet = new NameField("http://www.siliconknights.net",icons);
 				sknet.setSelectAllOnFocus(true);
 				about.add(sknet);
 				about.add(new JLabel(" "));
-				about.add(new JLabel("Some skill icons courtesy of the very helpful Too Human wiki."));
-				NameField wiki = new NameField("http://toohuman.wikia.com",icons);
-				wiki.setSelectAllOnFocus(true);
-				about.add(wiki);
+				about.add(new JLabel("<html>Skill icons thanks to the hard work of <b>Axeman87</b>,"));
+				about.add(new JLabel("another member of the great SK.net community."));
 				about.add(new JLabel(" "));
 				about.add(new JLabel("This software uses icons from the great Tango Desktop Project."));
 				NameField tango = new NameField("http://tango.freedesktop.org/Tango_Desktop_Project",icons);
@@ -564,6 +576,7 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 			classPanel.reset();
 		} else if(name.equals("Show progression bar")) {
 			classPanel.showProgressBar(showProg.isSelected());
+			repaint();
 		} else if(name.contains("Export")) {
 			if(!showPanel) return;
 			classPanel.exportAsPNG(this);
@@ -620,6 +633,9 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 		} else if(name.contains("Show profile")) {
 			splitpane.setLeftComponent(showItem.isSelected() ? profile : null);
 			pack();
+		} else if(name.contains("icons always")) {
+			classPanel.setSkillIconAlwaysEnabled(iconAlways.isSelected());
+			repaint();
 		}
 	}
 	private void setView(String classString) {
@@ -634,6 +650,7 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 			classPanel = cache.get(classString);
 		}
 		classPanel.showProgressBar(showProg.isSelected());
+		classPanel.setSkillIconAlwaysEnabled(iconAlways.isSelected());
 		classPanel.setVisible(true);
 		splitpane.setRightComponent(classPanel);
 		if(classPanel.getAlignment() != null) {
@@ -714,6 +731,16 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 				nameField.setText(export.name);
 			} else {
 				ClassExport[] export = new ClassExport[5];
+		/*		int max = 0;
+				for(max = 0; max < 5; max++) {
+					if(in.available() <= 0) {
+						JOptionPane.showMessageDialog(this,"File doesn't contain all classes.\nLoading what we can.",
+							"Error reading file!",JOptionPane.ERROR_MESSAGE);
+						break;
+					}
+					Object inobj = in.readObject();
+					export[max] = (ClassExport)inobj;
+				}*/
 				for(int k = 0; k < 5; export[k++] = (ClassExport)in.readObject());
 				splitpane.setRightComponent(null);
 				classPanel = new ClassPanel(export[0],icons);
@@ -724,11 +751,15 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 			}
 			pack();
 			in.close();
-		} catch(IOException ex){
-			JOptionPane.showMessageDialog(this,"There was an error opening the file:\n"+ex.getMessage(),
+		} catch(EOFException e) {
+			JOptionPane.showMessageDialog(this,"Reached EOF!","Error!",JOptionPane.ERROR_MESSAGE);
+			e.printStackTrace();
+		} catch(IOException e){
+			JOptionPane.showMessageDialog(this,"There was an IOException opening the file:\n"+e.getMessage(),
 				"Error opening file!",JOptionPane.ERROR_MESSAGE);
-		} catch(ClassNotFoundException ex){
-			JOptionPane.showMessageDialog(this,"There was an error opening the file:\n"+ex.getMessage(),
+			e.printStackTrace();
+		} catch(ClassNotFoundException e){
+			JOptionPane.showMessageDialog(this,"There was a ClassNotFoundException opening the file:\n"+e.getMessage(),
 				"Error opening file!",JOptionPane.ERROR_MESSAGE);
 		}
 	}
@@ -897,15 +928,14 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 		if(selected) {
 	//		label.setOpaque(index != -1);
 			label.setOpaque(true);
-            label.setBackground(list.getSelectionBackground());
-            label.setForeground(list.getSelectionForeground());
-        } else {
-        	label.setOpaque(false);
-            label.setBackground(list.getBackground());
-            label.setForeground(list.getForeground());
-        }
-        
-        return label;
+			label.setBackground(list.getSelectionBackground());
+			label.setForeground(list.getSelectionForeground());
+		} else {
+			label.setOpaque(false);
+			label.setBackground(list.getBackground());
+			label.setForeground(list.getForeground());
+		}
+		return label;
 	}
 	private int getMne(String s) {
 		if(s.equals("Berserker")) return KeyEvent.VK_B;
@@ -916,6 +946,9 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 		else if(s.equals("Human")) return KeyEvent.VK_H;
 		else if(s.equals("Cybernetic")) return KeyEvent.VK_Y;
 		else return -1;
+	}
+	public void stateChanged(ChangeEvent e) {
+		progLabel.setText(perc.format(loadBar.getPercentComplete()));
 	}
 	public static void main(String[] args) {
 //		JFrame.setDefaultLookAndFeelDecorated(true);

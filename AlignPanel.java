@@ -120,4 +120,9 @@ class AlignPanel extends JPanel implements ActionListener, java.io.Serializable 
 		return total;
 	}
 	public SkillBox[][] getSkills() { return skills; }
+	public void setSkillIconAlwaysEnabled(boolean b) {
+		for(int k = 0; k < skills.length; k++)
+			for(int j = 0; j < skills[k].length; j++)
+				skills[k][j].setIconAlwaysEnabled(b);
+	}
 }

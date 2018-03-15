@@ -11,11 +11,11 @@ class SkillBox extends JPanel implements ChangeListener, java.io.Serializable, M
 	private double multiplier;
 	private int maximum;
 	private ActionListener dep;
-	private boolean built = false;
+	private boolean built = false, iconAlwaysEnabled = false;
 	private DecimalFormat d = new DecimalFormat("#0.0%");
 	private Color bg,back;
 	private JLabel percent = new JLabel("Current Bonus: +"+d.format(0.0*0.0)), maxLabel,
-					spinnerLabel = new JLabel("0");
+					spinnerLabel = new JLabel("0"), iconLabel = new JLabel();
 	private JComponent details;
 	private JSpinner points = new JSpinner(new SpinnerNumberModel(0,0,10,1));
 	private JPopupMenu popup;
@@ -45,8 +45,8 @@ class SkillBox extends JPanel implements ChangeListener, java.io.Serializable, M
 		points = new JSpinner(new SpinnerNumberModel(0,0,maximum,1));
 		points.addChangeListener(this);
 		maxLabel = new JLabel("Max Bonus: +"+d.format(maximum/100.0 * multiplier));
-		spinnerLabel = new JLabel("0/"+maximum,SwingConstants.RIGHT);
-		JLabel iconLabel = new JLabel(icon);
+		spinnerLabel = new JLabel("  0/" + ((maximum < 10) ? " " : "") + maximum,SwingConstants.RIGHT);
+		iconLabel = new JLabel(icon);
 		
 		details = Box.createVerticalBox();
 	//	Box detailBox = Box.createVerticalBox();
@@ -69,7 +69,7 @@ class SkillBox extends JPanel implements ChangeListener, java.io.Serializable, M
 			popup.add(Integer.toString(k)).addActionListener(this);
 		
 		add(iconLabel,BorderLayout.CENTER);
-		add(spinnerLabel = new JLabel("  0/"+maximum),BorderLayout.EAST);
+		add(spinnerLabel = new JLabel("  0/"+ ((maximum < 10) ? " " : "") + maximum),BorderLayout.EAST);
 	//	setToolTipText(title+": "+desc1+" "+desc2);
 		addMouseListener(this);
 		setOpaque(true);
@@ -91,13 +91,14 @@ class SkillBox extends JPanel implements ChangeListener, java.io.Serializable, M
 		points.setEnabled(b);
 		spinnerLabel.setEnabled(b);
 		percent.setEnabled(b);
+		if(!iconAlwaysEnabled) iconLabel.setEnabled(b);
 		if(!b) setPoints(0);
 	}
 	public boolean isEnabled() { return points.isEnabled(); }
 	public int getPoints() { return (Integer)points.getValue(); }
 	public void setPoints(int p) {
 		points.setValue(p);
-		String text = " "+p+"/"+maximum;
+		String text = " "+p+"/"+((maximum < 10) ? " " : "")+maximum;
 		if(spinnerLabel != null) {
 			if(p < 10) text = "  "+text;
 			spinnerLabel.setText(text);
@@ -130,16 +131,26 @@ class SkillBox extends JPanel implements ChangeListener, java.io.Serializable, M
 	public Color getColor() { return bg; }
 	public Color getBack() { return back; }
 	public void setBack(Color col) { back = col; }
+	public void setIconAlwaysEnabled(boolean b) {
+		iconAlwaysEnabled = b;
+	//	if(b) iconLabel.setEnabled(true);
+		iconLabel.setEnabled(b || isEnabled());
+	}
+	public boolean isIconAlwaysEnabled() {
+		return iconAlwaysEnabled;
+	}
 	public void mouseEntered(MouseEvent e) {
 //		if(!isEnabled()) return;
 		if(!built) return;
 		if(back == null) back = getBackground();
 		setBackground(bg);
+		if(!isEnabled() && !iconAlwaysEnabled) iconLabel.setEnabled(true);
 	}
 	public void mouseExited(MouseEvent e) {
 //		if(!isEnabled()) return;
 		if(!built) return;
 		setBackground(back);
+		if(!isEnabled() && !iconAlwaysEnabled) iconLabel.setEnabled(false);
 	}
 	public void mouseClicked(MouseEvent e) {}
 	public void mousePressed(MouseEvent e) {}
