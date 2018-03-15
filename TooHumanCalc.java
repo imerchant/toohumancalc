@@ -10,8 +10,8 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 	private ClassPanel classPanel;
 	private FindDialog find;
 	private JSplitPane splitpane;
-	private HashMap<String,JRadioButtonMenuItem> classMenuButtons,alignbuttons;
-	private JRadioButtonMenuItem clearItem;
+	private HashMap<String,JCheckBoxMenuItem> classMenuButtons,alignbuttons;
+	private JCheckBoxMenuItem clearItem;
 	private ButtonGroup aligngroup,classMenuGroup;
 	private JComboBox classCombo,alignCombo;
 	private NotesArea classdesc, aligndesc;
@@ -20,14 +20,15 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 	private HashMap<String,ClassPanel> cache;
 	private ExtFilefilter filter;
 	private JProgressBar hitBar,meleeBar,ballisticsBar,armorBar;
-	private JCheckBoxMenuItem showProg;
-//	private JProgressBar[] hits, melees, ballistics, armors;
-	private JLabel specLabel;
+	private JProgressBar[] hits, melees, ballistics, armors;
+	private JCheckBoxMenuItem showProg, showItem;
+//	private JLabel specLabel;
 	private Icons icons;
 	private JFrame readFrame;
-	private boolean paintString = false, borderPainted = true, showPanel = false;
+	private JComponent about,profile;
+	private boolean paintString = false, borderPainted = true, showPanel = false, multibar = true;
 	private final String userdir = System.getProperty("user.dir");
-	private static final String version = "v3.0";
+	private static final String version = "v3.1";
 	private String[] classList = {"Berserker",
 								  "Defender",
 								  "Champion",
@@ -38,22 +39,22 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 	public TooHumanCalc(String args[]) {
 		super("Too Human Skill Calculator "+version);
 		boolean openFile = args.length > 0;
-	//	long time1 = System.nanoTime();
+		
 		UIManager.LookAndFeelInfo[] info = UIManager.getInstalledLookAndFeels();
 		String classname = /**info[4].getClassName();//*/ UIManager.getSystemLookAndFeelClassName();
 		try{UIManager.setLookAndFeel(classname);}catch(Exception e){}
 				
-/*	*/	String lafs[] = new String[info.length];
+/*	*	String lafs[] = new String[info.length];
 		for(int k = 0; k < lafs.length; k++)
 			lafs[k] = info[k].getClassName();
 		String option = (String)JOptionPane.showInputDialog(null,
 			"These are the currently installed look and feels. Choose one.\nClicking \"Cancel\" will use the current system look and feel.",
-			"Choose a look and feel.",JOptionPane.QUESTION_MESSAGE,null,lafs,UIManager.getSystemLookAndFeelClassName());
+			"Choose a look and feel.",JOptionPane.QUESTION_MESSAGE,null,lafs,classname);
 		try{UIManager.setLookAndFeel(option);}catch(Exception e){}//*/
 		
 	//	setUndecorated(true);
 	//	setResizable(false);
-		
+		long time1 = System.nanoTime();
 		Container pane = getContentPane();
 		pane.setLayout(new BorderLayout());
 		java.net.URL iconURL = getClass().getResource("imgs/icon.png");
@@ -64,7 +65,7 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 		dialog.setResizable(false);
 		JPanel loadingPanel = new JPanel(new BorderLayout());
 		JLabel loadingstatus = new JLabel("Status: ",SwingConstants.RIGHT);
-		JLabel loadingLabel = new JLabel("Loading. Please wait.",SwingConstants.CENTER);
+		JLabel loadingLabel = new JLabel("Loading the calc. Please wait.",SwingConstants.CENTER);
 		JLabel title = new JLabel("<html><b>Too Human Skill Calculator "+version,SwingConstants.CENTER);
 		if(iconURL != null) { 
 			title.setIcon(new ImageIcon(iconURL));
@@ -76,7 +77,8 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 		loadBar.setIndeterminate(true);
 		loadBar.setBorderPainted(true);
 		loadBar.setStringPainted(true);
-		JPanel labelPanel = new JPanel();
+		Box labelPanel = Box.createHorizontalBox();
+		labelPanel.add(Box.createHorizontalStrut(25));
 		labelPanel.add(loadingstatus);
 		labelPanel.add(loadingLabel);
 		loadingBar.add(loadBar);
@@ -90,6 +92,8 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 		dialog.setContentPane(loadingPanel);
 	//	dialog.setSize(new Dimension(225,100));
 		dialog.pack();
+		Dimension size = dialog.getSize();
+		dialog.setSize((int)size.getWidth()+25,(int)size.getHeight());
 		dialog.setLocationRelativeTo(null);
 		dialog.setVisible(true);
 		dialog.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -116,38 +120,22 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 		JMenuBar menubar = new JMenuBar();
 		JMenu fileMenu = new JMenu("File");
 		fileMenu.setMnemonic(KeyEvent.VK_F);
-		JMenu openMenu = new JMenu("Open");
+	/*	JMenu openMenu = new JMenu("Open");
 		openMenu.setIcon(icons.get("folder"));
 		openMenu.setMnemonic(KeyEvent.VK_O);
 		fileMenu.add(openMenu);
 		JMenu saveMenu = new JMenu("Save");
 		saveMenu.setIcon(icons.get("floppy"));
 		saveMenu.setMnemonic(KeyEvent.VK_S);
-		fileMenu.add(saveMenu);
+		fileMenu.add(saveMenu);*/
 		JMenuItem openNew = new JMenuItem("Open...",KeyEvent.VK_O);
 		openNew.setIcon(icons.get("document open"));
 		openNew.setAccelerator(KeyStroke.getKeyStroke("ctrl O"));
-		openMenu.add(openNew).addActionListener(this);
-		JMenuItem openItem = new JMenuItem("Open single...",KeyEvent.VK_P);
-		openItem.setIcon(icons.get("folder open"));
-		openItem.setAccelerator(KeyStroke.getKeyStroke("ctrl alt O"));
-		openMenu.add(openItem).addActionListener(this);
+		fileMenu.add(openNew).addActionListener(this);
 		JMenuItem saveNew = new JMenuItem("Save as...",KeyEvent.VK_S);
 		saveNew.setIcon(icons.get("doc save"));
 		saveNew.setAccelerator(KeyStroke.getKeyStroke("ctrl S"));
-		saveMenu.add(saveNew).addActionListener(this);
-		JMenuItem saveItem = new JMenuItem("Save single...",KeyEvent.VK_A);
-		saveItem.setIcon(icons.get("doc save as"));
-		saveItem.setAccelerator(KeyStroke.getKeyStroke("ctrl alt S"));
-		saveMenu.add(saveItem).addActionListener(this);
-		JMenuItem exportItem = new JMenuItem("Export as PNG...",KeyEvent.VK_E);
-		exportItem.setAccelerator(KeyStroke.getKeyStroke("ctrl E"));
-		exportItem.setIcon(icons.get("image x"));
-		fileMenu.add(exportItem).addActionListener(this);
-		JMenuItem findItem = new JMenuItem("Find skill...",KeyEvent.VK_F);
-		findItem.setAccelerator(KeyStroke.getKeyStroke("ctrl F"));
-		findItem.setIcon(icons.get("find"));
-		fileMenu.add(findItem).addActionListener(this);
+		fileMenu.add(saveNew).addActionListener(this);
 		fileMenu.addSeparator();
 		JMenuItem exitItem = new JMenuItem("Exit",KeyEvent.VK_X);
 		exitItem.setIcon(icons.get("log out"));
@@ -161,8 +149,36 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 		optionsMenu.setMnemonic(KeyEvent.VK_O);
 		showProg = new JCheckBoxMenuItem("Show progression bar",true);
 		showProg.setMnemonic(KeyEvent.VK_P);
+		showProg.setAccelerator(KeyStroke.getKeyStroke("ctrl alt P"));
 		optionsMenu.add(showProg).addActionListener(this);
+		showItem = new JCheckBoxMenuItem("Show profile pane",icons.get("view full"),true);
+		showItem.setMnemonic(KeyEvent.VK_H);
+		showItem.setAccelerator(KeyStroke.getKeyStroke("ctrl alt H"));
+		optionsMenu.add(showItem).addActionListener(this);
 		menubar.add(optionsMenu);
+		JMenu toolsMenu = new JMenu("Tools");
+		toolsMenu.setMnemonic(KeyEvent.VK_T);
+		JMenuItem exportItem = new JMenuItem("Export as PNG...",KeyEvent.VK_E);
+		exportItem.setAccelerator(KeyStroke.getKeyStroke("ctrl E"));
+		exportItem.setIcon(icons.get("image x"));
+		toolsMenu.add(exportItem).addActionListener(this);
+		JMenuItem findItem = new JMenuItem("Find skill...",KeyEvent.VK_F);
+		findItem.setAccelerator(KeyStroke.getKeyStroke("ctrl F"));
+		findItem.setIcon(icons.get("find"));
+		toolsMenu.add(findItem).addActionListener(this);
+		JMenu legacyMenu = new JMenu("Single open/save");
+		legacyMenu.setIcon(icons.get("folder"));
+		legacyMenu.setMnemonic(KeyEvent.VK_S);
+		JMenuItem openItem = new JMenuItem("Open single...",KeyEvent.VK_P);
+		openItem.setIcon(icons.get("folder open"));
+		openItem.setAccelerator(KeyStroke.getKeyStroke("ctrl alt O"));
+		legacyMenu.add(openItem).addActionListener(this);
+		JMenuItem saveItem = new JMenuItem("Save single...",KeyEvent.VK_A);
+		saveItem.setIcon(icons.get("doc save as"));
+		saveItem.setAccelerator(KeyStroke.getKeyStroke("ctrl alt S"));
+		legacyMenu.add(saveItem).addActionListener(this);
+		toolsMenu.add(legacyMenu);
+		menubar.add(toolsMenu);
 		JMenu helpMenu = new JMenu("Help");
 		helpMenu.setMnemonic(KeyEvent.VK_H);
 		JMenuItem helpItem = new JMenuItem("Help",KeyEvent.VK_H);
@@ -191,7 +207,7 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 		loadBar.setValue(++progress);
 		
 		loadingLabel.setText("Building basic profile box...");
-		JPanel profile = new JPanel(new BorderLayout());
+		profile = new JPanel(new BorderLayout());
 		profile.setBorder(BorderFactory.createTitledBorder("Character Profile"));
 		profile.add(namePanel,BorderLayout.NORTH);
 		Box profileBox = Box.createVerticalBox();
@@ -206,17 +222,18 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 		classMenu.add(resetItem);
 		classMenu.addSeparator();
 		classMenuGroup = new ButtonGroup();
-		classMenuButtons = new HashMap<String,JRadioButtonMenuItem>(classList.length);
+		classMenuButtons = new HashMap<String,JCheckBoxMenuItem>(classList.length);
 		JPanel buttonsPanel = new JPanel(new GridLayout(1,0));
 		buttonsPanel.setBorder(BorderFactory.createTitledBorder("Class"));
 		for(int k = 0; k < classList.length; k++) {
 			String name = classList[k];
-			JRadioButtonMenuItem ji = new JRadioButtonMenuItem(name,icons.get(name+"_small"));
-			ji.setAccelerator(KeyStroke.getKeyStroke("ctrl "+(k+1)));
-			ji.addActionListener(this);
-			classMenuButtons.put(name,ji);
-			classMenuGroup.add(ji);
-			classMenu.add(ji);
+			JCheckBoxMenuItem j = new JCheckBoxMenuItem(name,icons.get(name+"_small"));
+			j.setAccelerator(KeyStroke.getKeyStroke("ctrl "+(k+1)));
+			j.setMnemonic(getMne(name));
+			j.addActionListener(this);
+			classMenuButtons.put(name,j);
+			classMenuGroup.add(j);
+			classMenu.add(j);
 		}
 		classCombo = new JComboBox();
 		classCombo.addItem(" ");
@@ -231,19 +248,20 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 		loadingLabel.setText("Building alignment buttons...");
 		classMenu.addSeparator();
 		aligngroup = new ButtonGroup();
-		alignbuttons = new HashMap<String,JRadioButtonMenuItem>(alignList.length);
+		alignbuttons = new HashMap<String,JCheckBoxMenuItem>(alignList.length);
 		JPanel alignButtonPanel = new JPanel(new GridLayout(1,0));
 		alignButtonPanel.setBorder(BorderFactory.createTitledBorder("Alignment"));
 		for(int k = 0; k < alignList.length; k++) {
 			String name = alignList[k];
-			JRadioButtonMenuItem j = new JRadioButtonMenuItem(name,icons.get(name+"_small"));
+			JCheckBoxMenuItem j = new JCheckBoxMenuItem(name,icons.get(name+"_small"));
 			j.setAccelerator(KeyStroke.getKeyStroke("ctrl "+(k+8)));
 			j.addActionListener(this);
+			j.setMnemonic(getMne(name));
 			alignbuttons.put(name,j);
 			aligngroup.add(j);
 			classMenu.add(j);
 		}
-		aligngroup.add(clearItem = new JRadioButtonMenuItem("clear"));
+		aligngroup.add(clearItem = new JCheckBoxMenuItem("clear"));
 		alignCombo = new JComboBox();
 		alignCombo.addItem("  ");
 		for(String a: alignList)
@@ -264,90 +282,98 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 		classdesc.setFont(profileBox.getFont());
 		loadBar.setValue(++progress);
 		
-/*	*	hits = new JProgressBar[5];
-		melees = new JProgressBar[5];
-		ballistics = new JProgressBar[5];
-		armors = new JProgressBar[5];
-		for(int k = 0; k < hits.length; k++) {
-			hits[k] = new JProgressBar(SwingConstants.HORIZONTAL,0,1);
-			melees[k] = new JProgressBar(SwingConstants.HORIZONTAL,0,1);
-			ballistics[k] = new JProgressBar(SwingConstants.HORIZONTAL,0,1);
-			armors[k] = new JProgressBar(SwingConstants.HORIZONTAL,0,1);
-			hits[k].setString("");
-			hits[k].setStringPainted(true);
-			hits[k].setBorderPainted(true);
-			melees[k].setString("");
-			melees[k].setStringPainted(true);
-			melees[k].setBorderPainted(true);
-			ballistics[k].setString("");
-			ballistics[k].setStringPainted(true);
-			ballistics[k].setBorderPainted(true);
-			armors[k].setString("");
-			armors[k].setStringPainted(true);
-			armors[k].setBorderPainted(true);
-		}//*/
 		loadingLabel.setText("Building class stats GUI...");
+		
 		JPanel classStats = new JPanel(new BorderLayout());
 		JPanel classLabels = new JPanel(new GridLayout(4,0));
 		JPanel classBars = new JPanel(new GridLayout(4,0));
-	//	JPanel classBars = new JPanel(new GridLayout(4,5));
-		JPanel specLabels = new JPanel(new GridLayout(0,2));
+	//	JPanel specLabels = new JPanel(new BorderLayout());
 		classLabels.add(new JLabel("HIT POINTS  "));
 		classLabels.add(new JLabel("MELEE  "));
 		classLabels.add(new JLabel("BALLISTICS  "));
 		classLabels.add(new JLabel("ARMOR  "));
-		specLabels.add(new JLabel("SPECIALIZATIONS "));
-/*	*	for(int k = 0; k < hits.length; k++)
-			classBars.add(hits[k]);
-		for(int k = 0; k < melees.length; k++)
-			classBars.add(melees[k]);
-		for(int k = 0; k < ballistics.length; k++)
-			classBars.add(ballistics[k]);
-		for(int k = 0; k < armors.length; k++)
-			classBars.add(armors[k]);//*/
-/*	*/	classBars.add(hitBar = new JProgressBar(SwingConstants.HORIZONTAL,0,5));
-		classBars.add(meleeBar = new JProgressBar(SwingConstants.HORIZONTAL,0,5));
-		classBars.add(ballisticsBar = new JProgressBar(SwingConstants.HORIZONTAL,0,5));
-		classBars.add(armorBar = new JProgressBar(SwingConstants.HORIZONTAL,0,5));//*/
-		specLabels.add(specLabel = new JLabel());
-/*	*/	hitBar.setStringPainted(paintString);
-		meleeBar.setStringPainted(paintString);
-		ballisticsBar.setStringPainted(paintString);
-		armorBar.setStringPainted(paintString);
-		hitBar.setString(" ");
-		meleeBar.setString(" ");
-		ballisticsBar.setString(" ");
-		armorBar.setString(" ");
-		hitBar.setBorderPainted(borderPainted);
-		meleeBar.setBorderPainted(borderPainted);
-		ballisticsBar.setBorderPainted(borderPainted);
-		armorBar.setBorderPainted(borderPainted);//*/
-	/*	hitBar.setString("HIT POINTS");
-		meleeBar.setString("MELEE");
-		ballisticsBar.setString("BALLISTICS");
-		armorBar.setString("ARMOR");*/
+	//	specLabels.add(new JLabel("SPECS. "),BorderLayout.WEST);
+		if(multibar) {
+			classBars = new JPanel(new GridLayout(4,5));
+			hits = new JProgressBar[5];
+			melees = new JProgressBar[5];
+			ballistics = new JProgressBar[5];
+			armors = new JProgressBar[5];
+			for(int k = 0; k < hits.length; k++) {
+				hits[k] = new JProgressBar(SwingConstants.HORIZONTAL,0,1);
+				melees[k] = new JProgressBar(SwingConstants.HORIZONTAL,0,1);
+				ballistics[k] = new JProgressBar(SwingConstants.HORIZONTAL,0,1);
+				armors[k] = new JProgressBar(SwingConstants.HORIZONTAL,0,1);
+				hits[k].setString("");
+				hits[k].setStringPainted(paintString);
+				hits[k].setBorderPainted(borderPainted);
+				melees[k].setString("");
+				melees[k].setStringPainted(paintString);
+				melees[k].setBorderPainted(borderPainted);
+				ballistics[k].setString("");
+				ballistics[k].setStringPainted(paintString);
+				ballistics[k].setBorderPainted(borderPainted);
+				armors[k].setString("");
+				armors[k].setStringPainted(paintString);
+				armors[k].setBorderPainted(borderPainted);
+			}
+			for(int k = 0; k < hits.length; k++)
+				classBars.add(hits[k]);
+			for(int k = 0; k < melees.length; k++)
+				classBars.add(melees[k]);
+			for(int k = 0; k < ballistics.length; k++)
+				classBars.add(ballistics[k]);
+			for(int k = 0; k < armors.length; k++)
+				classBars.add(armors[k]);
+			Dimension dim = new Dimension(16,15);
+			for(int k = 0; k < hits.length; k++) {
+				hits[k].setPreferredSize(dim);
+				melees[k].setPreferredSize(dim);
+				ballistics[k].setPreferredSize(dim);
+				armors[k].setPreferredSize(dim);
+			}
+		} else {
+			classBars = new JPanel(new GridLayout(4,0));
+			classBars.add(hitBar = new JProgressBar(SwingConstants.HORIZONTAL,0,5));
+			classBars.add(meleeBar = new JProgressBar(SwingConstants.HORIZONTAL,0,5));
+			classBars.add(ballisticsBar = new JProgressBar(SwingConstants.HORIZONTAL,0,5));
+			classBars.add(armorBar = new JProgressBar(SwingConstants.HORIZONTAL,0,5));
+			hitBar.setStringPainted(paintString);
+			meleeBar.setStringPainted(paintString);
+			ballisticsBar.setStringPainted(paintString);
+			armorBar.setStringPainted(paintString);
+			hitBar.setString("HIT POINTS");
+			meleeBar.setString("MELEE");
+			ballisticsBar.setString("BALLISTICS");
+			armorBar.setString("ARMOR");
+			hitBar.setBorderPainted(borderPainted);
+			meleeBar.setBorderPainted(borderPainted);
+			ballisticsBar.setBorderPainted(borderPainted);
+			armorBar.setBorderPainted(borderPainted);
+			Dimension dim = new Dimension(80,15);
+			hitBar.setPreferredSize(dim);
+			meleeBar.setPreferredSize(dim);
+			ballisticsBar.setPreferredSize(dim);
+			armorBar.setPreferredSize(dim);
+		}
+	//	specLabels.add(specLabel = new JLabel(),BorderLayout.CENTER);
 	/*	Dimension dim = new Dimension(100,hitBar.getPreferredSize().height);
 		hitBar.setPreferredSize(dim);
 		meleeBar.setPreferredSize(dim);
 		ballisticsBar.setPreferredSize(dim);
 		armorBar.setPreferredSize(dim);*/
 		
-/*	*	Dimension dim = new Dimension(20,15);
-		for(int k = 0; k < hits.length; k++) {
-			hits[k].setPreferredSize(dim);
-			melees[k].setPreferredSize(dim);
-			ballistics[k].setPreferredSize(dim);
-			armors[k].setPreferredSize(dim);
-		}//*/
-		
 		classStats.add(classLabels,BorderLayout.WEST);
 		classStats.add(classBars,BorderLayout.CENTER);
-		classStats.add(specLabels,BorderLayout.SOUTH);
+	//	classStats.add(specLabels,BorderLayout.SOUTH);
 		
 		JPanel pClass = new JPanel(new GridLayout(1,0));
 		pClass.setBorder(BorderFactory.createTitledBorder("Class description"));
 		Box statBox = Box.createVerticalBox();
 		statBox.add(classStats);
+		statBox.add(Box.createVerticalStrut(6));
+		statBox.add(new JSeparator(JSeparator.HORIZONTAL));
+		statBox.add(Box.createVerticalStrut(3));
 		statBox.add(classdesc);
 		pClass.add(statBox);
 		profileBox.add(pClass);
@@ -370,11 +396,14 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 		loadingLabel.setText("Building class panels...");
 		classPanel = new ClassPanel();
 		cache = new HashMap<String,ClassPanel>(5);
-		for(String c: classList)
+		for(String c: classList) {
+			loadingLabel.setText("Building class panel: "+c);
 			cache.put(c,new ClassPanel(c,icons));
+		}
 		loadBar.setValue(++progress);
 		
 		loadingLabel.setText("Creating main GUI...");
+	//	splitpane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,true,null,classPanel);
 		splitpane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,true,profile,classPanel);
 		splitpane.setOneTouchExpandable(false);
 		splitpane.setResizeWeight(0);
@@ -382,12 +411,17 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 		loadBar.setValue(++progress);
 		
 		loadingLabel.setText("Building status bar...");
-		JLabel status = new JLabel("Strike F1 for help.");
+		JLabel status = new JLabel("For help, press F1. To view the README, F2.");
 		status.setOpaque(false);
 		status.setBorder(null);
 		loadBar.setValue(++progress);
 		
 		loadingLabel.setText("Packing...");
+	/*	JPanel combos = new JPanel();
+		combos.add(classCombo);
+		combos.add(alignCombo);
+		combos.add(classStats);
+		pane.add(combos,BorderLayout.NORTH);*/
 		pane.add(splitpane,BorderLayout.CENTER);
 		pane.add(status,BorderLayout.SOUTH);
 
@@ -408,9 +442,17 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 		dialog.dispose();
 		
 		setVisible(true);
+		nameField.requestFocusInWindow();
 		
-	//	long time2 = System.nanoTime();
-	//	System.out.println((time2-time1)/1000000000.0);
+		long time2 = System.nanoTime();
+		System.out.println((time2-time1)/1000000000.0);
+	/*	try {
+			Robot robot = new Robot();
+			robot.keyPress(KeyEvent.VK_CONTROL);
+			robot.keyPress(KeyEvent.VK_1);
+			robot.keyRelease(KeyEvent.VK_1);
+			robot.keyRelease(KeyEvent.VK_CONTROL);
+		} catch(Exception e) {}*/
 	}
 	public void actionPerformed(ActionEvent e) {
 		String name = e.getActionCommand();
@@ -424,6 +466,7 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 		} else if(e.getSource()==alignCombo) {
 			if(!showPanel) return;
 			String a = (String)alignCombo.getSelectedItem();
+	//		if(a == null) return;
 			if(a.equals("  ")) {
 				if(classPanel.getAlignment() != null)
 					alignCombo.setSelectedItem(classPanel.getAlignment());
@@ -437,7 +480,8 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 			classPanel.updateUI();
 			repaint();
 			pack();
-		} else if(e.getSource() instanceof JRadioButtonMenuItem) {
+		} else if(e.getSource() instanceof JCheckBoxMenuItem
+				&& (classMenuButtons.get(name) != null || alignbuttons.get(name) != null)) {
 			if(classPanel.getClassString().equals(name)) return;
 			if(classMenuButtons.get(name) != null) {
 				setView(name);
@@ -463,15 +507,35 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 				open(name.contains("single"),open.getSelectedFile());
 			}
 		} else if(name.equals("About")) {
-			JOptionPane.showMessageDialog(this,"<html><u>Too Human Skill Calculator (Java version) "+version+"</u>\n"+
-				"Copyright 2009 Imran Merchant\nContact: imerchant@gmail.com\n"+
-				"Website: http://pyreflies.nu/hench/TooHuman\n\n"+
-				"Too Human trademarks retained by Silicon Knights and Microsoft.\n\n"+
-				"Special thanks to maawdawg, tmunee, and MarkZ3 \nof the excellent TooHuman.net forums.\n\n"+
-				"Skill icons (partly) courtesy of the equally awesome \nToo Human wiki (http://toohuman.wikia.com).\n\n"+
-				"Some other icons part of the Tango Desktop Project\n(http://tango.freedesktop.org/Tango_Desktop_Project).\n\n"+
-				"Skill descriptions and stats taken from the retail version of Too Human.",
-				"About Too Human Skill Calculator "+version,JOptionPane.INFORMATION_MESSAGE,icons.get("icon"));
+			if(about == null) {
+				about = new JPanel(new GridLayout(19,0));
+				about.add(new JLabel("<html><u>Too Human Skill Calculator (Java version) "+version+"</u>"));
+				about.add(new JLabel("Copyright 2009 Imran Merchant"));
+				Box contact = Box.createHorizontalBox();
+				contact.add(new JLabel("Contact: "));
+				contact.add(new NameField("imerchant@gmail.com",icons));
+				about.add(contact);
+				Box web = Box.createHorizontalBox();
+				web.add(new JLabel("Website: "));
+				web.add(new NameField("http://pyreflies.nu/hench/TooHuman",icons));
+				about.add(web);
+				about.add(new JLabel(" "));
+				about.add(new JLabel("<html>All <i>Too Human</i> trademarks and copyrights are retained by"));
+				about.add(new JLabel("Silicon Knights and Microsoft."));
+				about.add(new JLabel(" "));
+				about.add(new JLabel("<html>Special thanks to <b>maawdawg</b>, <b>tmunee</b>, <b>MarkZ3</b>,"));
+				about.add(new JLabel("<html>and <b>AKAtheDopeman</b> of the excellent SiliconKnights.net"));
+				about.add(new NameField("http://www.siliconknights.net",icons));
+				about.add(new JLabel(" "));
+				about.add(new JLabel("Some skill icons courtesy of the very helpful Too Human wiki."));
+				about.add(new NameField("http://toohuman.wikia.com",icons));
+				about.add(new JLabel(" "));
+				about.add(new JLabel("This software uses icons from the great Tango Desktop Project."));
+				about.add(new NameField("http://tango.freedesktop.org/Tango_Desktop_Project",icons));
+				about.add(new JLabel(" "));
+				about.add(new JLabel("<html>Skill details taken from the retail version of <i>Too Human</i>."));
+			}
+			JOptionPane.showMessageDialog(this,about,"About Too Human Skill Calculator "+version,JOptionPane.INFORMATION_MESSAGE,icons.get("icon"));
 		} else if(name.equals("Help")) {
 			JOptionPane.showMessageDialog(this,"Select a class and alignment to view the trees.\n\n"+
 				"To add/remove points from a skill node:\n"+
@@ -540,6 +604,9 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 				find.setLocationRelativeTo(this);
 				find.setVisible(true);
 			}
+		} else if(name.contains("Show profile")) {
+			splitpane.setLeftComponent(showItem.isSelected() ? profile : null);
+			pack();
 		}
 	}
 	private void setView(String classString) {
@@ -671,96 +738,117 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 	}
 	private void setBars(JProgressBar[] array, int val) {
 		for(int k = 0; k < array.length; k++) {
-			array[k].setValue((k <= (val - 1)) ? 1 : 0);
+			array[k].setValue(k < val ? 1 : 0);
 		}
 	}
 	private void setClassDescText(String name) {
 		if(name == null) {
-	/*	*	setBars(hits,0);
-			setBars(melees,0);
-			setBars(ballistics,0);
-			setBars(armors,0);//*/
-	/*	*/	hitBar.setValue(0);
-			meleeBar.setValue(0);
-			ballisticsBar.setValue(0);
-			armorBar.setValue(0);//*/
-			specLabel.setText("");
+			if(multibar) {
+				setBars(hits,0);
+				setBars(melees,0);
+				setBars(ballistics,0);
+				setBars(armors,0);
+			} else {
+				hitBar.setValue(0);
+				meleeBar.setValue(0);
+				ballisticsBar.setValue(0);
+				armorBar.setValue(0);
+			}
+	//		specLabel.setText("");
 			classdesc.setText("Select a class to see description.");
 		} else if(name.equals("Berserker")) {
-	/*	*	setBars(hits,2);
-			setBars(melees,5);
-			setBars(ballistics,1);
-			setBars(armors,2);//*/
-	/*	*/	hitBar.setValue(2);
-			meleeBar.setValue(5);
-			ballisticsBar.setValue(1);
-			armorBar.setValue(2);//*/
-			specLabel.setText("<html>Damage dealing<p>Dual Wield Weapons");
+			if(multibar) {
+				setBars(hits,2);
+				setBars(melees,5);
+				setBars(ballistics,1);
+				setBars(armors,2);
+			} else {
+				hitBar.setValue(2);
+				meleeBar.setValue(5);
+				ballisticsBar.setValue(1);
+				armorBar.setValue(2);
+			}
+	//		specLabel.setText("<html>Damage dealing<p>Dual Wield Weapons");
 			classdesc.setText("The Berserker delights in the fury of close combat, forgoing defensive "+
 				"strategy in order to adopt all-out offense. Adopting a twin-blade fighting style and infused "+
 				"with the spirit of the bear, a Berserker will wade into battle for the glory of ODIN.");
 		} else if(name.equals("BioEngineer")) {
-	/*	*	setBars(hits,5);
-			setBars(melees,2);
-			setBars(ballistics,2);
-			setBars(armors,2);//*/
-	/*	*/	hitBar.setValue(5);
-			meleeBar.setValue(2);
-			ballisticsBar.setValue(2);
-			armorBar.setValue(2);//*/
-			specLabel.setText("<html>Regeneration<p>Healing");
+			if(multibar) {
+				setBars(hits,5);
+				setBars(melees,2);
+				setBars(ballistics,2);
+				setBars(armors,2);
+			} else {
+				hitBar.setValue(5);
+				meleeBar.setValue(2);
+				ballisticsBar.setValue(2);
+				armorBar.setValue(2);
+			}
+	//		specLabel.setText("<html>Regeneration<p>Healing");
 			classdesc.setText("A master of cybernetics as well as mundane combat, the BioEngineer repairs damage "+
 				"sustained on the battlefield, increasing health bonuses of himself and his allies, enabling them "+
 				"to take the fight directly into the heart of the enemy.");
 		} else if(name.equals("Champion")) {
-	/*	*	setBars(hits,3);
-			setBars(melees,3);
-			setBars(ballistics,3);
-			setBars(armors,3);//*/
-	/*	*/	hitBar.setValue(3);
-			meleeBar.setValue(3);
-			ballisticsBar.setValue(3);
-			armorBar.setValue(3);//*/
-			specLabel.setText("<html>Air Combat<p>Critical Strikes");
+			if(multibar) {
+				setBars(hits,3);
+				setBars(melees,3);
+				setBars(ballistics,3);
+				setBars(armors,3);
+			} else {
+				hitBar.setValue(3);
+				meleeBar.setValue(3);
+				ballisticsBar.setValue(3);
+				armorBar.setValue(3);
+			}
+	//		specLabel.setText("<html>Air Combat<p>Critical Strikes");
 			classdesc.setText("The Champion represents ODIN's divine force of retribution. A strong warrior able "+
 				"to deal out a wide variety of caustic force field and anti-gravity based effects, increasing the "+
 				"combat effectiveness of his allies. One-handed weapons are the Champion's chosen tools of combat.");
 		} else if(name.equals("Commando")) {
-	/*	*	setBars(hits,2);
-			setBars(melees,1);
-			setBars(ballistics,5);
-			setBars(armors,2);//*/
-	/*	*/	hitBar.setValue(2);
-			meleeBar.setValue(1);
-			ballisticsBar.setValue(5);
-			armorBar.setValue(2);//*/
-			specLabel.setText("<html>Explosives Master<p>Spider Master");
+			if(multibar) {
+				setBars(hits,2);
+				setBars(melees,1);
+				setBars(ballistics,5);
+				setBars(armors,2);
+			} else {
+				hitBar.setValue(2);
+				meleeBar.setValue(1);
+				ballisticsBar.setValue(5);
+				armorBar.setValue(2);
+			}
+	//		specLabel.setText("<html>Explosives Master<p>Spider Master");
 			classdesc.setText("Favoring technological gadgetry and stand-off methods of warfare, the Commando "+
 				"specializes in the use of mines, counter-measures, demolitions, and rifles. Able to support "+
 				"his allies through long-range harrying tactics, the Commando is truly a force to be reckoned with.");
 		} else if(name.equals("Defender")) {
-	/*	*	setBars(hits,4);
-			setBars(melees,2);
-			setBars(ballistics,2);
-			setBars(armors,4);//*/
-	/*	*/	hitBar.setValue(4);
-			meleeBar.setValue(2);
-			ballisticsBar.setValue(2);
-			armorBar.setValue(4);//*/
-			specLabel.setText("<html>Defensive toughness<p>Hammer & Shield</html>");
+			if(multibar) {
+				setBars(hits,4);
+				setBars(melees,2);
+				setBars(ballistics,2);
+				setBars(armors,4);
+			} else {
+				hitBar.setValue(4);
+				meleeBar.setValue(2);
+				ballisticsBar.setValue(2);
+				armorBar.setValue(4);
+			}
+	//		specLabel.setText("<html>Defensive toughness<p>Hammer & Shield</html>");
 			classdesc.setText("With the blessings of ODIN and runes of protection, the Defender is the backbone of "+
 				"the Aesir’s defense. Heavy armor enables the Defender to absorb a tremendous amount of damage, "+
 				"leaving his allies to take the battle to the enemy unharried.");
 		} else {
-	/*	*	setBars(hits,0);
-			setBars(melees,0);
-			setBars(ballistics,0);
-			setBars(armors,0);//*/
-	/*	*/	hitBar.setValue(0);
-			meleeBar.setValue(0);
-			ballisticsBar.setValue(0);
-			armorBar.setValue(0);//*/
-			specLabel.setText("");
+			if(multibar) {
+				setBars(hits,0);
+				setBars(melees,0);
+				setBars(ballistics,0);
+				setBars(armors,0);
+			} else {
+				hitBar.setValue(0);
+				meleeBar.setValue(0);
+				ballisticsBar.setValue(0);
+				armorBar.setValue(0);
+			}
+	//		specLabel.setText("");
 			classdesc.setText("Select a class to see description.");
 		}
 	}
@@ -778,6 +866,7 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 	}
 	public Component getListCellRendererComponent(JList list, Object value, int index, boolean selected, boolean hasFocus) {
 		String c = (String)value;
+	//	if(value == null) return null;
 	//	System.out.println(c + " " + index + " " + selected + " " + hasFocus);
 		if(c.equals(" ")) {
 			JMenuItem label = new JMenuItem("Select a class",icons.get("help"));
@@ -804,6 +893,16 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
         }
         
         return label;
+	}
+	private int getMne(String s) {
+		if(s.equals("Berserker")) return KeyEvent.VK_B;
+		else if(s.equals("Defender")) return KeyEvent.VK_D;
+		else if(s.equals("Champion")) return KeyEvent.VK_C;
+		else if(s.equals("Commando")) return KeyEvent.VK_O;
+		else if(s.equals("BioEngineer")) return KeyEvent.VK_E;
+		else if(s.equals("Human")) return KeyEvent.VK_H;
+		else if(s.equals("Cybernetic")) return KeyEvent.VK_Y;
+		else return -1;
 	}
 	public static void main(String[] args) {
 //		JFrame.setDefaultLookAndFeelDecorated(true);

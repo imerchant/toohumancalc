@@ -65,9 +65,10 @@ class NameField extends JTextField implements MouseListener {
 		super();
 		initialize();
 	}
-	public NameField(String text) {
+	public NameField(String text, Icons i) {
 		super(text);
 		initialize();
+		setIcons(i);
 	}
 	public NameField(String text, int cols) {
 		super(text,cols);

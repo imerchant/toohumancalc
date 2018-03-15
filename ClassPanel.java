@@ -68,7 +68,7 @@ class ClassPanel extends JPanel implements ActionListener, java.io.Serializable,
 		textBox.add(levelLabel = new JLabel("Level: 1"));
 		progress = new JProgressBar(JProgressBar.HORIZONTAL,0,95);
 		progress.setStringPainted(true);
-		progress.setBorderPainted(false);
+		progress.setBorderPainted(true);
 		JButton export = new JButton("Export");
 		export.setFocusPainted(false);
 		export.setToolTipText("Export trees as a PNG");

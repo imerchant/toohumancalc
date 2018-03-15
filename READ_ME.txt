@@ -1,5 +1,5 @@
 Too Human Skill Calculator by Imran Merchant
-Current Version: 3.0
+Current Version: 3.1
 Contact: imerchant@gmail.com
 http://pyreflies.nu/hench/TooHuman
 
@@ -30,6 +30,21 @@ PROGRAM WILL NOT WORK IN THIS CASE. The filetype must be .jar.
 ==========
 Changelog:
 ==========
+
+Version 3.1
+* Rearranged some menu options, moving Export to PNG and Find-a-Skill to new
+  "Tools" menu, along with the legacy open/save.
+* Added the ability to hide the left Profile Pane (Ctrl+Alt+H), making the calc
+  display better on non-widescreen monitors.
+* New icons for the Commando, Defender, and Ruiner nodes from AKAtheDopeman of
+  the SiliconKnights.net fora! Much better quality than the ones I had, and brings
+  the whole interface to parity.
+* Redesigned and updated the "About" dialog box with text boxes that allow
+  copy/paste-ing of the e-mail and web addresses.
+* Changed the stat bars to use multiple bars similar to the design of them in-game.
+* Changed menu items in Class menu to use JCheckBoxMenuItems instead of
+  JRadioButtonMenu Items. In Windows Classic and Windows XP, the RadioButtons used
+  a really bad graphic for the bullet, while the CheckBoxs are much cleaner.
 
 Version 3.0
 * Major UI revision: the class and alignment buttons on the left have been

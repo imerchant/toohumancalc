@@ -72,6 +72,7 @@ public class Icons extends HashMap<String,ImageIcon> {
 		put("paste",new ImageIcon(c.getResource("imgs/tango/edit-paste.png")));
 		put("delete",new ImageIcon(c.getResource("imgs/tango/edit-delete.png")));
 		put("select all",new ImageIcon(c.getResource("imgs/tango/edit-select-all.png")));
+		put("view full",new ImageIcon(c.getResource("imgs/tango/view-fullscreen.png")));
 	}
 	public ImageIcon get(String s) {
 		return super.get(s);
