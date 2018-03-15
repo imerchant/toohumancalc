@@ -1,9 +1,7 @@
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
-import javax.swing.event.*;
 import java.util.*;
-import java.text.DecimalFormat;
 
 class AlignPanel extends JPanel implements ActionListener, java.io.Serializable {
 	public static final long serialVersionUID = 32453467547L;
@@ -11,23 +9,24 @@ class AlignPanel extends JPanel implements ActionListener, java.io.Serializable 
 	private SkillBox skills[][];
 	private ActionListener listener;
 	private Icons icons;
-	public AlignPanel(ClassExport ex, ActionListener al,Icons i) {
-		this(ex.alignString,al,i);
+	public AlignPanel(ClassExport ex, ActionListener al, MouseListener ml, Icons i) {
+		this(ex.alignString,al,ml,i);
 		Iterator<Integer> iter = ex.alignPoints.iterator();
 		for(int k = 0; k < skills.length; k++)
 			for(int j = 0; j < skills[k].length; j++)
-				skills[k][j].setPoints(iter.next());
+				if(iter.hasNext())
+					skills[k][j].setPoints(iter.next());
 	}
-	public AlignPanel(String align, ActionListener al,Icons i) {
-		super(new GridLayout(6,3,3,0));
+	public AlignPanel(String align, ActionListener al, MouseListener ml, Icons i) {
+		super(new GridLayout(7,3,3,0));
 		alignment = align;
 		listener = al;
 		icons = i;
 		setBorder(BorderFactory.createTitledBorder(align + " Alignment tree"));
 
-		skills = new SkillBox[6][3];
-		for(int k = 0; k < 6; k++)
-			for(int j = 0; j < 3; j++)
+		skills = new SkillBox[7][3];
+		for(int k = 0; k < skills.length; k++)
+			for(int j = 0; j < skills[k].length; j++)
 				skills[k][j] = new SkillBox();
 
 		if(align.equals("Human")) {
@@ -74,9 +73,11 @@ class AlignPanel extends JPanel implements ActionListener, java.io.Serializable 
 				"equipped armor pieces.",1,10,Color.cyan);
 		}
 		skills[0][1].setEnabled(true);
-		for(int k = 0; k < 6; k++)
-			for(int j = 0; j < 3; j++) {
+		for(int k = 0; k < skills.length; k++)
+			for(int j = 0; j < skills[k].length; j++) {
 				skills[k][j].addActionListener(this);
+				skills[k][j].addMouseListener(ml);
+				skills[k][j].addMouseWheelListener((MouseWheelListener)ml);
 				add(skills[k][j]);
 			}
 	}
