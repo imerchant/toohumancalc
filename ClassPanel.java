@@ -41,7 +41,7 @@ class ClassPanel extends JPanel implements ActionListener, java.io.Serializable,
 		
 		Box topBox = Box.createHorizontalBox();
 		topBox.add(new JLabel("Character points used:  "));
-		topBox.add(pointsLabel = new JLabel("0/107"));
+		topBox.add(pointsLabel = new JLabel("0/95"));
 		error = new JLabel("   **TOO MANY CHARACTER POINTS USED!**");
 		error.setForeground(Color.red);
 		error.setVisible(false);
@@ -54,10 +54,7 @@ class ClassPanel extends JPanel implements ActionListener, java.io.Serializable,
 		JButton reset = new JButton("Reset");
 		reset.addActionListener(this);
 		topPanel.add(reset,BorderLayout.EAST);
-		Box box = Box.createHorizontalBox();
-		box.add(topPanel);
-		box.add(Box.createHorizontalGlue());
-		add(box,BorderLayout.NORTH);
+		add(topPanel,BorderLayout.NORTH);
 
 		int rows = classString.equals("Champion") ? 8 : 7;
 		JPanel skillTree = new JPanel(new GridLayout(rows,3,3,0));
@@ -262,7 +259,7 @@ class ClassPanel extends JPanel implements ActionListener, java.io.Serializable,
 	}
 	public boolean setAlignment(ClassExport ex) {
 		String align = ex.alignString;
-		if(!built || (!align.equals("Human") && !align.equals("Cybernetic"))) return false;
+		if(!built || align == null || (!align.equals("Human") && !align.equals("Cybernetic"))) return false;
 		skills[0][2].setVisible(align.equals("Human"));
 		alignString = align;
 		trees.remove(alignTree);
@@ -373,6 +370,7 @@ class ClassPanel extends JPanel implements ActionListener, java.io.Serializable,
 		updatePoints();
 	}
 	public void addActionListener(ActionListener al) { listener = al; }
+	public void reset() { zero(); }
 	public void zero() {
 		skills[0][2].clear();
 		skills[1][1].clear();
@@ -380,19 +378,28 @@ class ClassPanel extends JPanel implements ActionListener, java.io.Serializable,
 	}
 	private void updatePoints() {
 		total = getTotalPoints();
-		pointsLabel.setText(total+"/107");
-		if(total == 107)  {
-			pointsLabel.setText("107/107  **TOTAL REACHED**");
+		pointsLabel.setText(total+"/95");
+		if(total == 95)  {
+			pointsLabel.setText("95/95  **TOTAL REACHED**");
 			pointsLabel.setForeground(Color.green);
+			levelLabel.setText("Level: 50");
+			levelLabel.setForeground(getForeground());
 			levelLabel.setForeground(Color.green);
-		} else if(total > 107) {
+		} else if(total > 95) {
 			error.setVisible(true);
 			pointsLabel.setForeground(Color.red);
 			levelLabel.setForeground(Color.red);
 		} else {
 			error.setVisible(false);
 			pointsLabel.setForeground(getForeground());
-			int level = (int)Math.ceil((total <= 27) ? total/3.0 + 1.0 : (total-27)/2.0 + 10.0);
+		//	double level = 1;
+		/*	if(total <= 24)
+				level = Math.ceil(total/3.0 + 1.0);
+			else if(total <= 84)
+				level = Math.ceil((total-24)/2.0 + 9.0);
+			else if(total <= 95)
+				level = Math.ceil((total-84)/1.0 + 39.0);*/
+			int level = (int)Math.ceil((total <= 24) ? total/3.0 + 1.0 : (total <= 84) ? (total-24)/2.0 + 9.0 : total-84 + 39.0);
 			levelLabel.setText("Level: "+level);
 			levelLabel.setForeground(getForeground());
 		}
@@ -408,6 +415,7 @@ class ClassPanel extends JPanel implements ActionListener, java.io.Serializable,
 	public ClassExport export() {
 		ClassExport export = new ClassExport();
 		export.classString = classString;
+	//	System.out.println(classString + " " + export.classString);
 		export.alignString = alignString;
 		for(int k = 0; k < skills.length; k++)
 			for(int j = 0; j < skills[k].length; j++)
@@ -417,6 +425,10 @@ class ClassPanel extends JPanel implements ActionListener, java.io.Serializable,
 			for(int j = 0; j < alignSkills[k].length; j++)
 				export.alignPoints.add(alignSkills[k][j].getPoints());
 		return export;
+	}
+	public boolean equals(Object o) {
+		if(!(o instanceof ClassPanel)) return false;
+		return classString.equals(((ClassPanel)o).getClassString());
 	}
 	public void mouseEntered(MouseEvent e) {
 		SkillBox box = (SkillBox)e.getComponent();
@@ -449,7 +461,7 @@ class ClassPanel extends JPanel implements ActionListener, java.io.Serializable,
 		if(!up)
 			next = box.getPreviousValue();
 		else {
-			if(total >= 107) return;
+			if(total >= 95) return;
 			next = box.getNextValue();
 		}
 		if(next != null)

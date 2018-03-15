@@ -25,7 +25,7 @@ public class TooHumanCalc extends JFrame implements ActionListener, java.io.Seri
 	private JProgressBar[] hits, melees, ballistics, armors;
 	private JLabel specLabel;
 	private Icons icons;
-	private static final String version = "v2.1";
+	private static final String version = "v2.2";
 	private String[] classList = {"Berserker",
 								  "BioEngineer",
 								  "Champion",
@@ -37,7 +37,7 @@ public class TooHumanCalc extends JFrame implements ActionListener, java.io.Seri
 		super("Too Human Character Plotter "+version);
 	//	long time1 = System.nanoTime();
 		UIManager.LookAndFeelInfo[] info = UIManager.getInstalledLookAndFeels();
-		String classname = /**info[3].getClassName();//*/ UIManager.getSystemLookAndFeelClassName();
+		String classname = /**/info[3].getClassName();//*/ UIManager.getSystemLookAndFeelClassName();
 		try{UIManager.setLookAndFeel(classname);}catch(Exception e){}
 		
 	//	setUndecorated(true);
@@ -61,7 +61,7 @@ public class TooHumanCalc extends JFrame implements ActionListener, java.io.Seri
 		JProgressBar loadBar = new JProgressBar(SwingConstants.HORIZONTAL,0,15);
 		loadBar.setIndeterminate(true);
 		loadBar.setBorderPainted(false);
-	//	loadBar.setStringPainted(true);
+		loadBar.setStringPainted(true);
 		loadingBar.add(loadBar);
 		JButton cancel = new JButton("Cancel");
 		((JButton)loadingBar.add(cancel)).addActionListener(this);
@@ -101,12 +101,24 @@ public class TooHumanCalc extends JFrame implements ActionListener, java.io.Seri
 		JMenuBar menubar = new JMenuBar();
 		JMenu fileMenu = new JMenu("File");
 		fileMenu.setMnemonic(KeyEvent.VK_F);
-		JMenuItem openItem = new JMenuItem("Open...",KeyEvent.VK_O);
-		openItem.setAccelerator(KeyStroke.getKeyStroke("ctrl O"));
-		fileMenu.add(openItem).addActionListener(this);
-		JMenuItem saveItem = new JMenuItem("Save as...",KeyEvent.VK_S);
-		saveItem.setAccelerator(KeyStroke.getKeyStroke("ctrl S"));
-		fileMenu.add(saveItem).addActionListener(this);
+		JMenu openMenu = new JMenu("Open");
+		openMenu.setMnemonic(KeyEvent.VK_O);
+		fileMenu.add(openMenu);
+		JMenu saveMenu = new JMenu("Save");
+		saveMenu.setMnemonic(KeyEvent.VK_S);
+		fileMenu.add(saveMenu);
+		JMenuItem openNew = new JMenuItem("Open...",KeyEvent.VK_O);
+		openNew.setAccelerator(KeyStroke.getKeyStroke("ctrl O"));
+		openMenu.add(openNew).addActionListener(this);
+		JMenuItem openItem = new JMenuItem("Open single...",KeyEvent.VK_P);
+		openItem.setAccelerator(KeyStroke.getKeyStroke("ctrl shift O"));
+		openMenu.add(openItem).addActionListener(this);
+		JMenuItem saveNew = new JMenuItem("Save as...",KeyEvent.VK_S);
+		saveNew.setAccelerator(KeyStroke.getKeyStroke("ctrl S"));
+		saveMenu.add(saveNew).addActionListener(this);
+		JMenuItem saveItem = new JMenuItem("Save single...",KeyEvent.VK_A);
+		saveItem.setAccelerator(KeyStroke.getKeyStroke("ctrl shift S"));
+		saveMenu.add(saveItem).addActionListener(this);
 		fileMenu.addSeparator();
 		JMenuItem exitItem = new JMenuItem("Exit",KeyEvent.VK_X);
 		exitItem.setAccelerator(KeyStroke.getKeyStroke("alt X"));
@@ -168,6 +180,11 @@ public class TooHumanCalc extends JFrame implements ActionListener, java.io.Seri
 			classMenuGroup.add(ji);
 			classMenu.add(ji);
 		}
+		classMenu.addSeparator();
+		JMenuItem resetItem = new JMenuItem("Reset",KeyEvent.VK_R);
+		resetItem.setAccelerator(KeyStroke.getKeyStroke("F5"));
+		resetItem.addActionListener(this);
+		classMenu.add(resetItem);
 		profileBox.add(buttonsPanel);
 		loadBar.setValue(7);
 		
@@ -358,7 +375,7 @@ public class TooHumanCalc extends JFrame implements ActionListener, java.io.Seri
 			classPanel.updateUI();
 			repaint();
 			pack();
-		} else if(name.equals("Save as...")) {
+		} else if(name.equals("Save single...")) {
 			if(save.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
 				File file = new File(save.getSelectedFile().getPath()+".thclass");
 				try {
@@ -372,28 +389,68 @@ public class TooHumanCalc extends JFrame implements ActionListener, java.io.Seri
 				} catch(IOException ex){
 					JOptionPane.showMessageDialog(this,"There was an error saving the file:\n"+ex.getMessage(),
 						"Error saving file!",JOptionPane.ERROR_MESSAGE);
+				} catch(NullPointerException ex) {
+					JOptionPane.showMessageDialog(this,"There was an error saving the file:\n"+ex.getMessage(),
+						"Error saving file!",JOptionPane.ERROR_MESSAGE);
 				}
 			}
-		} else if(name.equals("Save all...")) {
+		} else if(name.equals("Save as...")) {
 			if(save.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
 				File file = new File(save.getSelectedFile().getPath()+".thclass");
 				try {
 					ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file));
 					ClassExport[] export = new ClassExport[5];
-					int k = 0;
-					for(ClassPanel cp: cache.values())
-						export[k++] = cp.export();
+					export[0] = classPanel.export();
 					export[0].name = nameField.getText();
-					for(ClassExport cp: export)
-						out.writeObject(cp);
+					int k = 1;
+					for(ClassPanel c: cache.values())
+						if(!classPanel.equals(c))
+							export[k++] = c.export();
+					for(ClassExport c: export) {
+		//				System.out.println(c);
+						out.writeObject(c);
+					}
 					out.flush();
 					out.close();
 				} catch(IOException ex){
 					JOptionPane.showMessageDialog(this,"There was an error saving the file:\n"+ex.getMessage(),
 						"Error saving file!",JOptionPane.ERROR_MESSAGE);
+				} catch(NullPointerException ex) {
+					JOptionPane.showMessageDialog(this,"There was an error saving the file:\n"+ex.getMessage(),
+						"Error saving file!",JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		} else if(name.equals("Open...")) {
+			if(open.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+				File file = open.getSelectedFile();
+				try {
+					ObjectInputStream in = new ObjectInputStream(new FileInputStream(file));
+					ClassExport[] export = new ClassExport[5];
+					for(int k = 0; k < 5; export[k++] = (ClassExport)in.readObject());
+					splitpane.setRightComponent(null);
+					classPanel = new ClassPanel(export[0],this,icons);
+					cache.put(classPanel.getClassString(),classPanel);
+					for(int k = 1; k < 5; cache.put(export[k].classString,new ClassPanel(export[k++],this,icons)));
+					classgroup.setSelected(classbuttons.get(classPanel.getClassString()).getModel(),true);
+					classMenuGroup.setSelected(classMenuButtons.get(classPanel.getClassString()).getModel(),true);
+					if(classPanel.getAlignment() != null)
+						aligngroup.setSelected(alignbuttons.get(classPanel.getAlignment()).getModel(),true);
+					classPanel.setVisible(true);
+					splitpane.setRightComponent(classPanel);
+					nameField.setText(export[0].name);
+					setClassDescText(export[0].classString);
+					setAlignDescText(export[0].alignString);
+					pack();
+					in.close();
+				} catch(IOException ex){
+					JOptionPane.showMessageDialog(this,"There was an error opening the file:\n"+ex.getMessage(),
+						"Error opening file!",JOptionPane.ERROR_MESSAGE);
+				} catch(ClassNotFoundException ex){
+					JOptionPane.showMessageDialog(this,"There was an error opening the file:\n"+ex.getMessage(),
+						"Error opening file!",JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		} else if(name.equals("Open single...")) {
 			if(open.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
 				File file = open.getSelectedFile();
 				try {
@@ -434,8 +491,14 @@ public class TooHumanCalc extends JFrame implements ActionListener, java.io.Seri
 			JOptionPane.showMessageDialog(this,"Select a class and alignment to view the trees.\n\n"+
 				"To add/remove points from a skill node:\n"+
 				"Add points: Left click or mouse wheel up.\n"+
-				"Remove points: Right or Control click or mouse wheel down.","Help",JOptionPane.INFORMATION_MESSAGE,
+				"Remove points: Right or Control click or mouse wheel down.\n\n"+
+				"Save/Open normal vs. single:\n"+
+				"Use \"single\" for legacy (below v2.2) plotter files.\n"+
+				"New files save all classes, older files only contain one class."
+				,"Help",JOptionPane.INFORMATION_MESSAGE,
 				icons.get("Icon"));
+		} else if(name.equals("Reset")) {
+			classPanel.reset();
 		}
 	}
 	private void setView(String classString) {
