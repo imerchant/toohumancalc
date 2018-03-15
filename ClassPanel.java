@@ -22,7 +22,9 @@ class ClassPanel extends JPanel implements ActionListener, java.io.Serializable,
 	private int total = 0;
 	private JFileChooser saveImage;
 	private ExtFilefilter filter;
-	private String classString = "none", alignString;
+	private NotesArea notesArea;
+//	private JTextArea notesArea;
+	private String classString = "none", alignString = null;
 	private String[] alignments = new String[] {"Human","Cybernetic"};
 	public String toString() { return classString; }
 	public ClassPanel() {}
@@ -34,6 +36,10 @@ class ClassPanel extends JPanel implements ActionListener, java.io.Serializable,
 			for(int j = 0; j < skills[k].length; j++)
 				if(iter.hasNext())
 					skills[k][j].setPoints(iter.next());
+		java.lang.reflect.Field fields[] = ex.getClass().getFields();
+		for(java.lang.reflect.Field f: fields)
+			if(f.getName().equals("notes"))
+				notesArea.setText(ex.notes);
 		setAlignment(ex);
 		
 	}
@@ -64,10 +70,12 @@ class ClassPanel extends JPanel implements ActionListener, java.io.Serializable,
 		progress.setStringPainted(true);
 		progress.setBorderPainted(false);
 		JButton export = new JButton("Export");
+		export.setFocusPainted(false);
 		export.setToolTipText("Export trees as a PNG");
 		export.setIcon(icons.get("image x"));
 		export.addActionListener(this);
 		JButton reset = new JButton("Reset");
+		reset.setFocusPainted(false);
 		reset.setToolTipText("Reset trees to zero");
 		reset.setIcon(icons.get("refresh"));
 		reset.addActionListener(this);
@@ -79,7 +87,7 @@ class ClassPanel extends JPanel implements ActionListener, java.io.Serializable,
 		add(topPanel,BorderLayout.NORTH);
 
 		int rows = classString.equals("Champion") ? 8 : 7;
-		JPanel skillTree = new JPanel(new GridLayout(rows,3,3,0));
+		JPanel skillTree = new JPanel(new GridLayout(rows,3,0,0));
 		skillTree.setBorder(BorderFactory.createTitledBorder(classString + " skill tree"));
 		skills = new SkillBox[rows][3];
 		for(int k = 0; k < rows; k++)
@@ -274,19 +282,22 @@ class ClassPanel extends JPanel implements ActionListener, java.io.Serializable,
 		
 		details = new JScrollPane(blank);
 		details.setBorder(BorderFactory.createTitledBorder("Skill details"));
-	/*	JPanel crazyIdea = new JPanel(new GridLayout(2,0));
+		JPanel crazyIdea = new JPanel(new GridLayout(2,0));
+	//	crazyIdea.setPreferredSize(new Dimension(pref.width+20,pref.height));
 	//	crazyIdea.setBorder(BorderFactory.createTitledBorder("Skill details"));
 		crazyIdea.add(details);
-		JTextArea area = new JTextArea();
-		area.setLineWrap(true);
-		area.setWrapStyleWord(true);
-		area.setFont(getFont());
-		area.setPreferredSize(new Dimension(pref.width+20,pref.height/2));
-		JScrollPane areaPane = new JScrollPane(area);
+		notesArea = new NotesArea();
+	//	notesArea = new JTextArea();
+		notesArea.setIcons(icons);
+		notesArea.setLineWrap(true);
+		notesArea.setWrapStyleWord(true);
+		notesArea.setFont(getFont());
+	//	notesArea.setPreferredSize(new Dimension(pref.width+20,pref.height/2));
+		JScrollPane areaPane = new JScrollPane(notesArea);//,ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);;
 		areaPane.setBorder(BorderFactory.createTitledBorder("Notes"));
-		crazyIdea.add(areaPane);*/
+		crazyIdea.add(areaPane);
 		
-		splitpane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,true,trees,details);
+		splitpane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,true,trees,crazyIdea);//details);
 		splitpane.setBorder(null);
 		splitpane.setDividerSize(0);
 		
@@ -466,6 +477,7 @@ class ClassPanel extends JPanel implements ActionListener, java.io.Serializable,
 		for(int k = 0; k < alignSkills.length; k++)
 			for(int j = 0; j < alignSkills[k].length; j++)
 				export.alignPoints.add(alignSkills[k][j].getPoints());
+		export.notes = notesArea.getText();
 		return export;
 	}
 	public boolean exportAsPNG(Component parent) {
@@ -494,6 +506,12 @@ class ClassPanel extends JPanel implements ActionListener, java.io.Serializable,
 				return false;
 			}
 		} else return false;
+	}
+	public void setNotesText(String s) {
+		notesArea.setText(s);
+	}
+	public String getNotesText() {
+		return notesArea.getText();
 	}
 	public boolean equals(Object o) {
 		if(!(o instanceof ClassPanel)) return false;

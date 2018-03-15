@@ -18,7 +18,7 @@ class SkillBox extends JPanel implements ChangeListener, java.io.Serializable, M
 	private JComponent details;
 	private JSpinner points = new JSpinner(new SpinnerNumberModel(0,0,10,1));
 	private JPopupMenu popup;
-	public SkillBox() {}
+	public SkillBox() { title = ""; }
 	public SkillBox(ImageIcon i, String t, String d1, String d2, double multi, int max, Color col) {
 		this(i,t,d1,d2,null,multi,max,col);
 	}

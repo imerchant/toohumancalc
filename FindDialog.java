@@ -6,7 +6,7 @@ import java.util.*;
 class FindDialog extends JFrame implements ActionListener,ListCellRenderer,WindowFocusListener {
 	public static final long serialVersionUID = -436598723475l;
 	private HashMap<String,ClassPanel> cache;
-	private JTextField field;
+	private NameField field;
 //	private JPanel titlePanel,descPanel;
 //	private Box titlePanel,descPanel;
 	private JList titleList,descList;
@@ -44,10 +44,12 @@ class FindDialog extends JFrame implements ActionListener,ListCellRenderer,Windo
 		searchPanel.setBorder(BorderFactory.createTitledBorder("Enter a search term"));
 	//	JLabel searchLabel = new JLabel("Enter a search term:  ");
 	//	searchPanel.add(searchLabel,BorderLayout.WEST);
-		field = new JTextField("",35);
+		field = new NameField("",35);
+		field.setIcons(icons);
 		field.addActionListener(this);
 		searchPanel.add(field,BorderLayout.CENTER);
 		JButton search = new JButton("Search",icons.get("search"));
+		search.setFocusPainted(false);
 		search.addActionListener(this);
 		searchPanel.add(search,BorderLayout.EAST);
 		JPanel restr = new JPanel();

@@ -1,5 +1,5 @@
 Too Human Skill Calculator by Imran Merchant
-Current Version: 2.8.2
+Current Version: 3.0
 Contact: imerchant@gmail.com
 http://pyreflies.nu/hench/TooHuman
 
@@ -31,10 +31,22 @@ PROGRAM WILL NOT WORK IN THIS CASE. The filetype must be .jar.
 Changelog:
 ==========
 
-Version 2.8.2
+Version 3.0
+* Major UI revision: the class and alignment buttons on the left have been
+  replaced by drop down menus.
+* Minor UI revision: "Notes" field added to class trees. Use the space for
+  detailed descriptions of your builds or for whatever. The contents of the
+  text box save in the files along with the trees. The box is fully capable
+  of copy/paste functions with the system clipboard, as well.
 * Small change to FindDialog: addition of WindowFocusListener; when the
   FindDialog gets focus, focus moves to the search box JTextField always.
-* Replaced the class and alignment buttons with a drop down menu.
+* Small change to the READ_ME dialog box: it now uses the same kind of text box
+  as the notes text box on the trees, so the READ_ME dialog box now has full
+  support for cut/copy/paste and all that. If you care for such a thing.
+* Redefined setView() to be more useful; as of 2.8 the function of the method
+  was spread out and not at all useful. I've consolidated its functions from
+  open() and actionPerformed() into setView(), and it now does what it should
+  have done all along.
 
 Version 2.8
 * Added the ability to filter the Find-a-Skill by class and alignment. Also

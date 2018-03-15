@@ -4,6 +4,7 @@ class ClassExport implements java.io.Serializable, Comparable<ClassExport> {
 	private static final long serialVersionUID = 50078927L;
 	public String classString,alignString,name;
 	public Vector<Integer> classPoints,alignPoints;
+	public String notes;
 	public ClassExport() {
 		classString = "";
 		alignString = "";
@@ -18,7 +19,7 @@ class ClassExport implements java.io.Serializable, Comparable<ClassExport> {
 	public boolean equals(Object o) {
 		if(!(o instanceof ClassExport)) return false;
 		ClassExport c = (ClassExport)o;
-		return c.classString.equals(classString) && c.alignString.equals(alignString);
+		return classString.equals(c.classString) && alignString.equals(c.alignString);
 	}
 	public int compareTo(ClassExport ce) {
 		if(ce == null) return -999;

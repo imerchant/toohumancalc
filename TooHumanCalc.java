@@ -10,12 +10,12 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 	private ClassPanel classPanel;
 	private FindDialog find;
 	private JSplitPane splitpane;
-	private HashMap<String,JRadioButtonMenuItem> classMenuButtons,classbuttons,alignbuttons;
+	private HashMap<String,JRadioButtonMenuItem> classMenuButtons,alignbuttons;
 	private JRadioButtonMenuItem clearItem;
-	private ButtonGroup classgroup, aligngroup,classMenuGroup;
+	private ButtonGroup aligngroup,classMenuGroup;
 	private JComboBox classCombo,alignCombo;
-	private JTextArea classdesc, aligndesc;
-	private JTextField nameField;
+	private NotesArea classdesc, aligndesc;
+	private NameField nameField;
 	private JFileChooser save,open;
 	private HashMap<String,ClassPanel> cache;
 	private ExtFilefilter filter;
@@ -26,7 +26,8 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 	private Icons icons;
 	private JFrame readFrame;
 	private boolean paintString = false, borderPainted = true, showPanel = false;
-	private static final String version = "v2.8.2";
+	private final String userdir = System.getProperty("user.dir");
+	private static final String version = "v3.0";
 	private String[] classList = {"Berserker",
 								  "Defender",
 								  "Champion",
@@ -34,14 +35,15 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 								  "BioEngineer"},
 					 alignList = {"Human",
 					 			  "Cybernetic"};
-	public TooHumanCalc() {
+	public TooHumanCalc(String args[]) {
 		super("Too Human Skill Calculator "+version);
+		boolean openFile = args.length > 0;
 	//	long time1 = System.nanoTime();
 		UIManager.LookAndFeelInfo[] info = UIManager.getInstalledLookAndFeels();
 		String classname = /**info[4].getClassName();//*/ UIManager.getSystemLookAndFeelClassName();
 		try{UIManager.setLookAndFeel(classname);}catch(Exception e){}
 				
-/*	*	String lafs[] = new String[info.length];
+/*	*/	String lafs[] = new String[info.length];
 		for(int k = 0; k < lafs.length; k++)
 			lafs[k] = info[k].getClassName();
 		String option = (String)JOptionPane.showInputDialog(null,
@@ -80,6 +82,7 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 		loadingBar.add(loadBar);
 		loadingBar.add(Box.createHorizontalStrut(15));
 		JButton cancelButton = new JButton("Cancel");
+		cancelButton.setFocusPainted(false);
 		((JButton)loadingBar.add(cancelButton)).addActionListener(this);
 		loadingPanel.add(title,BorderLayout.NORTH);
 		loadingPanel.add(labelPanel,BorderLayout.CENTER);
@@ -99,11 +102,11 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 		
 		loadingLabel.setText("Building filechoosers...");
 		filter = new ExtFilefilter(".thclass","Too Human Character Plotter files (*.thclass)");
-		save = new JFileChooser(System.getProperty("user.dir"));
+		save = new JFileChooser(userdir);
 		save.setDialogType(JFileChooser.SAVE_DIALOG);
 		save.setDialogTitle("Save the current character");
 		save.setFileFilter(filter);
-		open = new JFileChooser(System.getProperty("user.dir"));
+		open = new JFileChooser(userdir);
 		open.setDialogType(JFileChooser.OPEN_DIALOG);
 		open.setDialogTitle("Open a character");
 		open.setFileFilter(filter);
@@ -180,7 +183,8 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 		
 		loadingLabel.setText("Building name field...");		
 		JLabel nameLabel = new JLabel("Name: ");
-		nameField = new JTextField("",20);
+		nameField = new NameField("",20);
+		nameField.setIcons(icons);
 		Box namePanel = Box.createHorizontalBox();
 		namePanel.add(nameLabel);
 		namePanel.add(nameField);
@@ -201,22 +205,12 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 		resetItem.addActionListener(this);
 		classMenu.add(resetItem);
 		classMenu.addSeparator();
-	//	classgroup = new ButtonGroup();
 		classMenuGroup = new ButtonGroup();
-	//	classbuttons = new HashMap<String,JRadioButtonMenuItem>(classList.length);
 		classMenuButtons = new HashMap<String,JRadioButtonMenuItem>(classList.length);
-	//	JPanel buttonsPanel = new JPanel(new GridLayout(classList.length,0));
 		JPanel buttonsPanel = new JPanel(new GridLayout(1,0));
 		buttonsPanel.setBorder(BorderFactory.createTitledBorder("Class"));
 		for(int k = 0; k < classList.length; k++) {
 			String name = classList[k];
-		/*	JRadioButtonMenuItem j = new JRadioButtonMenuItem(name,icons.get(name+"_30"));
-			j.setAccelerator(KeyStroke.getKeyStroke("ctrl "+(k+1)));
-			j.addActionListener(this);
-			classbuttons.put(name,j);
-			classgroup.add(j);
-			buttonsPanel.add(j);
-			j.setOpaque(false);*/
 			JRadioButtonMenuItem ji = new JRadioButtonMenuItem(name,icons.get(name+"_small"));
 			ji.setAccelerator(KeyStroke.getKeyStroke("ctrl "+(k+1)));
 			ji.addActionListener(this);
@@ -238,7 +232,6 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 		classMenu.addSeparator();
 		aligngroup = new ButtonGroup();
 		alignbuttons = new HashMap<String,JRadioButtonMenuItem>(alignList.length);
-	//	JPanel alignButtonPanel = new JPanel(new GridLayout(alignList.length,0));
 		JPanel alignButtonPanel = new JPanel(new GridLayout(1,0));
 		alignButtonPanel.setBorder(BorderFactory.createTitledBorder("Alignment"));
 		for(int k = 0; k < alignList.length; k++) {
@@ -247,9 +240,7 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 			j.setAccelerator(KeyStroke.getKeyStroke("ctrl "+(k+8)));
 			j.addActionListener(this);
 			alignbuttons.put(name,j);
-		//	alignButtonPanel.add(j);
 			aligngroup.add(j);
-		//	j.setOpaque(false);
 			classMenu.add(j);
 		}
 		aligngroup.add(clearItem = new JRadioButtonMenuItem("clear"));
@@ -264,7 +255,8 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 		loadBar.setValue(++progress);
 		
 		loadingLabel.setText("Building class desc GUI...");
-		classdesc = new JTextArea("Select a class to see description.");
+		classdesc = new NotesArea("Select a class to see description.");
+		classdesc.setIcons(icons);
 		classdesc.setLineWrap(true);
 		classdesc.setWrapStyleWord(true);
 		classdesc.setEditable(false);
@@ -362,7 +354,8 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 		loadBar.setValue(++progress);
 		
 		loadingLabel.setText("Building alignment desc GUI...");
-		aligndesc = new JTextArea("Select an alignment to see description.");
+		aligndesc = new NotesArea("Select an alignment to see description.");
+		aligndesc.setIcons(icons);
 		aligndesc.setLineWrap(true);
 		aligndesc.setWrapStyleWord(true);
 		aligndesc.setEditable(false);
@@ -403,6 +396,13 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 		setLocation(0,0);
 		loadBar.setValue(++progress);
 		
+		if(openFile) {
+			loadingLabel.setText("Opening file...");
+			File f = new File(args[0]);
+			if(filter.acceptFile(f))
+				open(false,f);
+		}
+		
 		loadingLabel.setText("Loading complete!");
 		dialog.setVisible(false);
 		dialog.dispose();
@@ -420,20 +420,7 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 			String c = (String)classCombo.getSelectedItem();
 			if(classPanel.getClassString().equals(c) || c.equals(" ")) return;
 			if(!c.equals(" ")) classCombo.removeItem(" ");
-			aligngroup.setSelected(clearItem.getModel(),true);
 			setView(c);
-			alignCombo.setSelectedIndex(0);
-			if(classPanel.getAlignment() != null) {
-				aligngroup.setSelected(alignbuttons.get(classPanel.getAlignment()).getModel(),true);
-				alignCombo.setSelectedItem(classPanel.getAlignment());
-			}
-			setClassDescText(c);
-			setAlignDescText(classPanel.getAlignment());
-			classMenuGroup.setSelected(classMenuButtons.get(c).getModel(),true);
-			classPanel.revalidate();
-			classPanel.updateUI();
-			repaint();
-			pack();
 		} else if(e.getSource()==alignCombo) {
 			if(!showPanel) return;
 			String a = (String)alignCombo.getSelectedItem();
@@ -453,18 +440,7 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 		} else if(e.getSource() instanceof JRadioButtonMenuItem) {
 			if(classPanel.getClassString().equals(name)) return;
 			if(classMenuButtons.get(name) != null) {
-				aligngroup.setSelected(clearItem.getModel(),true); // Workaround for ButtonGroup.clearSelection()
 				setView(name);
-				alignCombo.setSelectedIndex(0);
-				if(classPanel.getAlignment() != null) {
-					aligngroup.setSelected(alignbuttons.get(classPanel.getAlignment()).getModel(),true);
-					alignCombo.setSelectedItem(classPanel.getAlignment());
-				}
-				setClassDescText(name);
-				setAlignDescText(classPanel.getAlignment());
-				classMenuGroup.setSelected(classMenuButtons.get(name).getModel(),true);
-			//	classgroup.setSelected(classbuttons.get(name).getModel(),true);
-				classCombo.setSelectedItem(name);
 				if(!name.equals(" ")) classCombo.removeItem(" ");
 			}
 			else {
@@ -488,7 +464,7 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 			}
 		} else if(name.equals("About")) {
 			JOptionPane.showMessageDialog(this,"<html><u>Too Human Skill Calculator (Java version) "+version+"</u>\n"+
-				"Copyright 2008 Imran Merchant\nContact: imerchant@gmail.com\n"+
+				"Copyright 2009 Imran Merchant\nContact: imerchant@gmail.com\n"+
 				"Website: http://pyreflies.nu/hench/TooHuman\n\n"+
 				"Too Human trademarks retained by Silicon Knights and Microsoft.\n\n"+
 				"Special thanks to maawdawg, tmunee, and MarkZ3 \nof the excellent TooHuman.net forums.\n\n"+
@@ -530,14 +506,17 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 				readFrame.setIconImage(icons.get("text x").getImage());
 				Container pane = readFrame.getContentPane();
 				pane.setLayout(new BorderLayout());
-				JTextArea area = new JTextArea();
+				NotesArea area = new NotesArea();
+				area.setIcons(icons);
 				area.setFont(getFont());
 				for(int k = 0; k < readme.size(); k++)
 					area.append(readme.get(k)+"\n");
 				area.setCaretPosition(0);
 				pane.add(new JScrollPane(area),BorderLayout.CENTER);
 				JPanel closePanel = new JPanel();
-				((JButton)closePanel.add(new JButton("Close"))).addActionListener(this);
+				JButton closeButton = new JButton("Close",icons.get("stop"));
+				closeButton.setFocusPainted(false);
+				((JButton)closePanel.add(closeButton)).addActionListener(this);
 				pane.add(closePanel,BorderLayout.SOUTH);
 			}
 			if(readFrame.isVisible())
@@ -566,6 +545,8 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 	private void setView(String classString) {
 		if(!showPanel) showPanel = true;
 		splitpane.setRightComponent(null);
+		aligngroup.setSelected(clearItem.getModel(),true);
+		alignCombo.setSelectedIndex(0);
 		if(cache.size() == 0 || cache.get(classString) == null) {
 			classPanel = new ClassPanel(classString,icons);
 			cache.put(classString,classPanel);
@@ -575,6 +556,21 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 		classPanel.showProgressBar(showProg.isSelected());
 		classPanel.setVisible(true);
 		splitpane.setRightComponent(classPanel);
+		if(classPanel.getAlignment() != null) {
+			aligngroup.setSelected(alignbuttons.get(classPanel.getAlignment()).getModel(),true);
+			alignCombo.setSelectedItem(classPanel.getAlignment());
+		} else {
+			aligngroup.setSelected(clearItem.getModel(),true);
+			alignCombo.setSelectedIndex(0);
+		}
+		setClassDescText(classString);
+		setAlignDescText(classPanel.getAlignment());
+		classMenuGroup.setSelected(classMenuButtons.get(classString).getModel(),true);
+		classCombo.setSelectedItem(classString);
+		classPanel.revalidate();
+		classPanel.updateUI();
+		repaint();
+		pack();
 	}
 	private void save(boolean single, File file) {
 		if(!filter.acceptFile(file))
@@ -618,9 +614,11 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 		} catch(IOException ex){
 			JOptionPane.showMessageDialog(this,"There was an error saving the file:\n"+ex.getMessage(),
 				"Error saving file!",JOptionPane.ERROR_MESSAGE);
+			ex.printStackTrace();
 		} catch(NullPointerException ex) {
 			JOptionPane.showMessageDialog(this,"There was an error saving the file:\n"+ex.getMessage(),
 				"Error saving file!",JOptionPane.ERROR_MESSAGE);
+			ex.printStackTrace();
 		}
 	}
 	private void open(boolean single, File file) {
@@ -631,22 +629,8 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 				splitpane.setRightComponent(null);
 				classPanel = new ClassPanel(export,icons);
 				cache.put(classPanel.getClassString(),classPanel);
-				classCombo.setSelectedItem(classPanel.getClassString());
-			//	classgroup.setSelected(classbuttons.get(classPanel.getClassString()).getModel(),true);
-				classMenuGroup.setSelected(classMenuButtons.get(classPanel.getClassString()).getModel(),true);
-				if(classPanel.getAlignment() != null) {
-					aligngroup.setSelected(alignbuttons.get(classPanel.getAlignment()).getModel(),true);
-					alignCombo.setSelectedItem(classPanel.getAlignment());
-				}
-				else {
-					aligngroup.setSelected(clearItem.getModel(),true);
-					alignCombo.setSelectedIndex(0);
-				}
-				classPanel.setVisible(true);
-				splitpane.setRightComponent(classPanel);
+				setView(classPanel.getClassString());
 				nameField.setText(export.name);
-				setClassDescText(export.classString);
-				setAlignDescText(export.alignString);
 			} else {
 				ClassExport[] export = new ClassExport[5];
 				for(int k = 0; k < 5; export[k++] = (ClassExport)in.readObject());
@@ -654,33 +638,18 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 				classPanel = new ClassPanel(export[0],icons);
 				cache.put(classPanel.getClassString(),classPanel);
 				for(int k = 1; k < 5; cache.put(export[k].classString,new ClassPanel(export[k++],icons)));
-				classCombo.setSelectedItem(classPanel.getClassString());
-			//	classgroup.setSelected(classbuttons.get(classPanel.getClassString()).getModel(),true);
-				classMenuGroup.setSelected(classMenuButtons.get(classPanel.getClassString()).getModel(),true);
-				if(classPanel.getAlignment() != null) {
-					aligngroup.setSelected(alignbuttons.get(classPanel.getAlignment()).getModel(),true);
-					alignCombo.setSelectedItem(classPanel.getAlignment());
-				}
-				else {
-					aligngroup.setSelected(clearItem.getModel(),true);
-					alignCombo.setSelectedIndex(0);
-				}
-				classPanel.setVisible(true);
-				splitpane.setRightComponent(classPanel);
+				setView(classPanel.getClassString());
 				nameField.setText(export[0].name);
-				setClassDescText(export[0].classString);
-				setAlignDescText(export[0].alignString);
 			}
+			if(!showPanel) showPanel = true;
 			pack();
 			in.close();
 		} catch(IOException ex){
 			JOptionPane.showMessageDialog(this,"There was an error opening the file:\n"+ex.getMessage(),
 				"Error opening file!",JOptionPane.ERROR_MESSAGE);
-			ex.printStackTrace();
 		} catch(ClassNotFoundException ex){
 			JOptionPane.showMessageDialog(this,"There was an error opening the file:\n"+ex.getMessage(),
 				"Error opening file!",JOptionPane.ERROR_MESSAGE);
-			ex.printStackTrace();
 		}
 	}
 	public void pack() {
@@ -812,11 +781,11 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 	//	System.out.println(c + " " + index + " " + selected + " " + hasFocus);
 		if(c.equals(" ")) {
 			JMenuItem label = new JMenuItem("Select a class",icons.get("help"));
-			label.setOpaque(selected && index != -1);
+			label.setOpaque(selected);
 			return label;
 		} else if(c.equals("  ")) {
 			JMenuItem label = new JMenuItem("Select an alignment",icons.get("help"));
-			label.setOpaque(selected && index != -1);
+			label.setOpaque(selected);
 			return label;
 		}
 		JMenuItem label = new JMenuItem(c,icons.get(c+"_30"));
@@ -838,6 +807,6 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 	}
 	public static void main(String[] args) {
 //		JFrame.setDefaultLookAndFeelDecorated(true);
-		new TooHumanCalc();
+		new TooHumanCalc(args);
 	}
 }
