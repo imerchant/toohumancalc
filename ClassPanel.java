@@ -68,7 +68,7 @@ class ClassPanel extends JPanel implements ActionListener, java.io.Serializable,
 			for(int j = 0; j < 3; j++)
 				skills[k][j] = new SkillBox();
 		skills[0][2] = new SkillBox(icons.get("ruiner"),"Human Spiritual Ruiner","Increases spiritual Ruiner radius.",
-			"Ruiners require 1 combo level to activate.",5,5,Color.lightGray);
+			"Ruiners require 1 combo level to activate.",100,5,Color.lightGray);
 		int off = 0;
 		if(classString.equals("Berserker")) {
 			skills[1][1] = new SkillBox(icons.get("berserker1"),"A Capacity for Rage (Group Skill)","Level 1-9: Increases combo meter growth rate.",
@@ -187,7 +187,7 @@ class ClassPanel extends JPanel implements ActionListener, java.io.Serializable,
 			skills[3][2] = new SkillBox(icons.get("commando7"),"Tree of Shrieking-Flame","Spider: Deploys a Plasma turret.",
 				null,5,10,YELLOW);
 			skills[4][2] = new SkillBox(icons.get("commando10"),"Cut to the Bone","Battle Cry: Increases Ballistic damage.",
-				"Also affects co-op party.",5,10,BLUE);
+				"Also affects co-op party.",10,10,BLUE);
 			skills[5][2] = new SkillBox(icons.get("commando13"),"Gift of Gungnir","Increases Rifle damage.",
 				null,3,10,CYAN);
 		} else if(classString.equals("Defender")) {
@@ -269,6 +269,7 @@ class ClassPanel extends JPanel implements ActionListener, java.io.Serializable,
 		alignString = align;
 		trees.remove(alignTree);
 		alignTree = new AlignPanel(ex,this,this,icons);
+		cache.put(alignString,alignTree);
 		trees.add(alignTree,BorderLayout.EAST);
 		alignTree.setVisible(true);
 		updateUI();

@@ -1,3 +1,13 @@
+Version 2.4
+* Bugfix: Hitting "Reset" didn't clear some points, preventing full builds from being made. App had to be restarted to fix the problem. I changed how the reset function works, I believe it is fixed now.
+* Updated the skill details using the retail version of the game. Commando tree, and both Alignment trees contain the heaviest changes.
+
+Version 2.3
+* Added progression bar to the trees. Shows percent of available points used. Can be hidden.
+* New options menu. Only one so far, but hoping for more.
+* Some optimization changes.
+* Alt-clicks provide more input options. See help.
+
 Version 2.2
 * Updated with new character point total of 95. Also the level calculator had to be re-written.
 * New loading screen with loading details.

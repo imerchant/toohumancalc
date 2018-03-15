@@ -56,7 +56,7 @@ class SkillBox extends JPanel implements ChangeListener, java.io.Serializable, M
 		points = new JSpinner(new SpinnerNumberModel(0,0,maximum,1));
 		points.addChangeListener(this);
 		maxLabel = new JLabel("Max Bonus: +"+d.format(maximum/100.0 * multiplier));
-		spinnerLabel = new JLabel("0/"+maximum);
+		spinnerLabel = new JLabel("0/"+maximum,SwingConstants.RIGHT);
 		JLabel iconLabel = new JLabel(icon);
 		
 		details = Box.createVerticalBox();

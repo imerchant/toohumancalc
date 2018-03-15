@@ -22,8 +22,8 @@ public class TooHumanCalc extends JFrame implements ActionListener, java.io.Seri
 //	private JProgressBar[] hits, melees, ballistics, armors;
 	private JLabel specLabel;
 	private Icons icons;
-	private boolean paintString = false;
-	private static final String version = "v2.3";
+	private boolean paintString = false, borderPainted = true;
+	private static final String version = "v2.4";
 	private String[] classList = {"Berserker",
 								  "Defender",
 								  "Champion",
@@ -35,7 +35,7 @@ public class TooHumanCalc extends JFrame implements ActionListener, java.io.Seri
 		super("Too Human Character Plotter "+version);
 	//	long time1 = System.nanoTime();
 		UIManager.LookAndFeelInfo[] info = UIManager.getInstalledLookAndFeels();
-		String classname = /**info[3].getClassName();//*/ UIManager.getSystemLookAndFeelClassName();
+		String classname = /**info[1].getClassName();//*/ UIManager.getSystemLookAndFeelClassName();
 		try{UIManager.setLookAndFeel(classname);}catch(Exception e){}
 		
 	/*	String lafs[] = new String[info.length];
@@ -55,7 +55,7 @@ public class TooHumanCalc extends JFrame implements ActionListener, java.io.Seri
 		if(iconURL != null) setIconImage(getToolkit().createImage(iconURL));
 		
 		JFrame dialog = new JFrame("Loading...");
-		dialog.setUndecorated(true);
+	//	dialog.setUndecorated(true);
 		dialog.setResizable(false);
 		JPanel loadingPanel = new JPanel(new BorderLayout());
 		JLabel loadingstatus = new JLabel("Status: ",SwingConstants.RIGHT);
@@ -281,10 +281,10 @@ public class TooHumanCalc extends JFrame implements ActionListener, java.io.Seri
 		meleeBar.setString(" ");
 		ballisticsBar.setString(" ");
 		armorBar.setString(" ");
-	/*	hitBar.setBorderPainted(false);
-		meleeBar.setBorderPainted(false);
-		ballisticsBar.setBorderPainted(false);
-		armorBar.setBorderPainted(false);*/
+		hitBar.setBorderPainted(borderPainted);
+		meleeBar.setBorderPainted(borderPainted);
+		ballisticsBar.setBorderPainted(borderPainted);
+		armorBar.setBorderPainted(borderPainted);
 	/*	hitBar.setString("HIT POINTS");
 		meleeBar.setString("MELEE");
 		ballisticsBar.setString("BALLISTICS");
@@ -316,10 +316,13 @@ public class TooHumanCalc extends JFrame implements ActionListener, java.io.Seri
 		aligndesc.setLineWrap(true);
 		aligndesc.setWrapStyleWord(true);
 		aligndesc.setEditable(false);
-		aligndesc.setBorder(BorderFactory.createTitledBorder("Alignment description"));
+	//	aligndesc.
 		aligndesc.setOpaque(false);
 		aligndesc.setFont(profileBox.getFont());
-		profileBox.add(aligndesc);
+		JPanel alignBox = new JPanel(new BorderLayout());
+		alignBox.setBorder(BorderFactory.createTitledBorder("Alignment description"));
+		alignBox.add(aligndesc,BorderLayout.CENTER);
+		profileBox.add(alignBox);
 		loadBar.setValue(++progress);
 		
 		loadingLabel.setText("Preloading class panels...");
@@ -348,7 +351,7 @@ public class TooHumanCalc extends JFrame implements ActionListener, java.io.Seri
 
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		pack();
-		setLocation(0,50);
+		setLocation(0,0);
 		loadBar.setValue(++progress);
 		
 		loadingLabel.setText("Loading complete!");
@@ -388,6 +391,7 @@ public class TooHumanCalc extends JFrame implements ActionListener, java.io.Seri
 			pack();
 		} else if(name.equals("Save single...")) {
 			if(save.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+		//		if(save.getSelectedFile().exists()) JOptionPane.showMessageDialog(this,"blargh!");
 				File file = new File(save.getSelectedFile().getPath()+".thclass");
 				try {
 					ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file));
@@ -407,6 +411,7 @@ public class TooHumanCalc extends JFrame implements ActionListener, java.io.Seri
 			}
 		} else if(name.equals("Save as...")) {
 			if(save.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+		//		if(save.getSelectedFile().exists()) JOptionPane.showMessageDialog(this,"blargh!");
 				File file = new File(save.getSelectedFile().getPath()+".thclass");
 				try {
 					ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file));
@@ -494,14 +499,13 @@ public class TooHumanCalc extends JFrame implements ActionListener, java.io.Seri
 				}
 			}
 		} else if(name.equals("About")) {
-			JOptionPane.showMessageDialog(this,"Too Human Character Plotter (Java version) "+version+"\n"+
+			JOptionPane.showMessageDialog(this,"<html><u>Too Human Character Plotter (Java version) "+version+"</u>\n"+
 				"Copyright 2008 Imran Merchant\nContact: imerchant@gmail.com\n\n"+
-				"Too Human Copyright 2008 Silicon Knights\n\n"+
+				"Too Human trademarks retained by Silicon Knights and Microsoft.\n\n"+
 				"Special thanks to maawdawg, tmunee, and MarkZ3 \nof the excellent TooHuman.net forums.\n\n"+
-				"Skill icons courtesy of the equally awesome \nToo Human wiki (http://toohuman.wikia.com).\n\n"+
-				"Skill descriptions and stats taken from\nthe official Too Human demo available\n"+
-				"now on the Xbox Live Marketplace!",
-				"About TH Character Plotter",JOptionPane.INFORMATION_MESSAGE,icons.get("Icon"));
+				"Skill icons (partly) courtesy of the equally awesome \nToo Human wiki (http://toohuman.wikia.com).\n\n"+
+				"Skill descriptions and stats taken from the retail version of Too Human.",
+				"About Too Human Character Plotter "+version,JOptionPane.INFORMATION_MESSAGE,icons.get("Icon"));
 		} else if(name.equals("Help")) {
 			JOptionPane.showMessageDialog(this,"Select a class and alignment to view the trees.\n\n"+
 				"To add/remove points from a skill node:\n"+
