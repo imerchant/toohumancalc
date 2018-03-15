@@ -36,6 +36,9 @@ public class Icons extends HashMap<String,ImageIcon> {
 		put("Cybernetic_30",new ImageIcon(c.getResource("imgs/Cyber_icon_30.png")));
 		put("Human_30",new ImageIcon(c.getResource("imgs/Human_icon_30.png")));
 		
+		put("Cybernetic_small",new ImageIcon(c.getResource("imgs/Cyber_icon_small.png")));
+		put("Human_small",new ImageIcon(c.getResource("imgs/Human_icon_small.png")));
+		
 		for(int k = 1; k <= 9; k++) {
 			put("Cyber"+k,new ImageIcon(c.getResource("imgs/Cyber"+k+".png")));
 			put("Human"+k,new ImageIcon(c.getResource("imgs/Human"+k+".png")));

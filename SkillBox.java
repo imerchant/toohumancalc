@@ -118,7 +118,7 @@ class SkillBox extends JPanel implements ChangeListener, java.io.Serializable, M
 	public JPopupMenu getPopup() { return popup; }
 	public int getMax() { return maximum; }
 	public boolean equals(Object box) {
-		if(!(box instanceof SkillBox)) return false;
+		if(!(box instanceof SkillBox) || box == null) return false;
 		return title.equals(((SkillBox)box).getTitle());
 	}
 	public boolean built() { return built; }

@@ -1,5 +1,5 @@
 Too Human Skill Calculator by Imran Merchant
-Current Version: 2.8
+Current Version: 2.8.2
 Contact: imerchant@gmail.com
 http://pyreflies.nu/hench/TooHuman
 
@@ -30,6 +30,11 @@ PROGRAM WILL NOT WORK IN THIS CASE. The filetype must be .jar.
 ==========
 Changelog:
 ==========
+
+Version 2.8.2
+* Small change to FindDialog: addition of WindowFocusListener; when the
+  FindDialog gets focus, focus moves to the search box JTextField always.
+* Replaced the class and alignment buttons with a drop down menu.
 
 Version 2.8
 * Added the ability to filter the Find-a-Skill by class and alignment. Also

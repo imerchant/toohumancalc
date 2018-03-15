@@ -3,7 +3,7 @@ import java.awt.event.*;
 import javax.swing.*;
 import java.util.*;
 
-class FindDialog extends JFrame implements ActionListener,ListCellRenderer {
+class FindDialog extends JFrame implements ActionListener,ListCellRenderer,WindowFocusListener {
 	public static final long serialVersionUID = -436598723475l;
 	private HashMap<String,ClassPanel> cache;
 	private JTextField field;
@@ -111,6 +111,7 @@ class FindDialog extends JFrame implements ActionListener,ListCellRenderer {
 		pane.add(panel,BorderLayout.CENTER);
 		
 		setDefaultCloseOperation(HIDE_ON_CLOSE);
+		addWindowFocusListener(this);
 		pack();
 	//	setSize(500,400);
 	}
@@ -232,4 +233,8 @@ class FindDialog extends JFrame implements ActionListener,ListCellRenderer {
 				setSize(size.width,screen.height - pos.y-30);
 		}
 	}
+	public void windowGainedFocus(WindowEvent e) {
+		field.requestFocusInWindow();
+	}
+	public void windowLostFocus(WindowEvent e){}
 }

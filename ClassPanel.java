@@ -270,10 +270,21 @@ class ClassPanel extends JPanel implements ActionListener, java.io.Serializable,
 		blank = new JPanel();
 		blank.add(new JLabel("Hover a skill to view details."));
 		Dimension pref = trees.getPreferredSize();
-		blank.setPreferredSize(new Dimension(pref.width+20,pref.height));
+		blank.setPreferredSize(new Dimension(pref.width+20,pref.height/2));
 		
 		details = new JScrollPane(blank);
 		details.setBorder(BorderFactory.createTitledBorder("Skill details"));
+	/*	JPanel crazyIdea = new JPanel(new GridLayout(2,0));
+	//	crazyIdea.setBorder(BorderFactory.createTitledBorder("Skill details"));
+		crazyIdea.add(details);
+		JTextArea area = new JTextArea();
+		area.setLineWrap(true);
+		area.setWrapStyleWord(true);
+		area.setFont(getFont());
+		area.setPreferredSize(new Dimension(pref.width+20,pref.height/2));
+		JScrollPane areaPane = new JScrollPane(area);
+		areaPane.setBorder(BorderFactory.createTitledBorder("Notes"));
+		crazyIdea.add(areaPane);*/
 		
 		splitpane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,true,trees,details);
 		splitpane.setBorder(null);
