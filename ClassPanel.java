@@ -434,9 +434,11 @@ class ClassPanel extends JPanel implements ActionListener, java.io.Serializable,
 	//	if(box.isEnabled()) box.setBackground(box.getBack());
 	}
 	public void mouseClicked(MouseEvent e) {
+	//	increasePoints(!(e.isMetaDown() || e.isControlDown()),(SkillBox)e.getSource());
+	}
+	public void mousePressed(MouseEvent e) {
 		increasePoints(!(e.isMetaDown() || e.isControlDown()),(SkillBox)e.getSource());
 	}
-	public void mousePressed(MouseEvent e) {}
 	public void mouseReleased(MouseEvent e) {}
 	public void mouseWheelMoved(MouseWheelEvent e) {
 		increasePoints(e.getWheelRotation() == -1,(SkillBox)e.getSource());

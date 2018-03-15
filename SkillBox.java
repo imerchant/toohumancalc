@@ -101,7 +101,7 @@ class SkillBox extends JPanel implements ChangeListener, java.io.Serializable, M
 		points.setValue(p);
 		String text = " "+p+"/"+maximum;
 		if(spinnerLabel != null) {
-			if(p < 10) text = " "+text;
+			if(p < 10) text = "  "+text;
 			spinnerLabel.setText(text);
 		}
 	}
