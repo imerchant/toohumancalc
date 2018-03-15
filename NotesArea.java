@@ -58,7 +58,7 @@ class NotesArea extends JTextArea implements MouseListener,Scrollable {
 		}
 	}
 }
-class NameField extends JTextField implements MouseListener {
+class NameField extends JTextField implements MouseListener,FocusListener {
 	private static final long serialVersionUID = -9283434L;
 	private Icons icons;
 	public NameField() {
@@ -111,6 +111,14 @@ class NameField extends JTextField implements MouseListener {
 			popup.add(new SelectAll(this,icons.get("select all")));
 			popup.show(this,e.getX(),e.getY());
 		}
+	}
+	public void focusGained(FocusEvent e) {
+		selectAll();
+	}
+	public void focusLost(FocusEvent e) {}
+	public void setSelectAllOnFocus(boolean on) {
+		if(on) addFocusListener(this);
+		else removeFocusListener(this);
 	}
 }
 class Cut extends AbstractAction {

@@ -28,7 +28,7 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 	private JComponent about,profile;
 	private boolean paintString = false, borderPainted = true, showPanel = false, multibar = true;
 	private final String userdir = System.getProperty("user.dir");
-	private static final String version = "v3.1";
+	private static final String version = "v3.2";
 	private String[] classList = {"Berserker",
 								  "Defender",
 								  "Champion",
@@ -72,7 +72,7 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 			dialog.setIconImage(getToolkit().createImage(iconURL));
 		}
 		Box loadingBar = Box.createHorizontalBox();
-		JProgressBar loadBar = new JProgressBar(SwingConstants.HORIZONTAL,0,14);
+		JProgressBar loadBar = new JProgressBar(SwingConstants.HORIZONTAL,0,18);
 		int progress = 0;
 		loadBar.setIndeterminate(true);
 		loadBar.setBorderPainted(true);
@@ -105,7 +105,7 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 		loadBar.setValue(++progress);
 		
 		loadingLabel.setText("Building filechoosers...");
-		filter = new ExtFilefilter(".thclass","Too Human Character Plotter files (*.thclass)");
+		filter = new ExtFilefilter(".thclass","Too Human Skill Calculator files (*.thclass)");
 		save = new JFileChooser(userdir);
 		save.setDialogType(JFileChooser.SAVE_DIALOG);
 		save.setDialogTitle("Save the current character");
@@ -162,7 +162,7 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 		exportItem.setAccelerator(KeyStroke.getKeyStroke("ctrl E"));
 		exportItem.setIcon(icons.get("image x"));
 		toolsMenu.add(exportItem).addActionListener(this);
-		JMenuItem findItem = new JMenuItem("Find skill...",KeyEvent.VK_F);
+		JMenuItem findItem = new JMenuItem("Find-a-Skill...",KeyEvent.VK_F);
 		findItem.setAccelerator(KeyStroke.getKeyStroke("ctrl F"));
 		findItem.setIcon(icons.get("find"));
 		toolsMenu.add(findItem).addActionListener(this);
@@ -394,13 +394,15 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 		loadBar.setValue(++progress);
 		
 		loadingLabel.setText("Building class panels...");
+		long cachetime1 = System.nanoTime();
 		classPanel = new ClassPanel();
 		cache = new HashMap<String,ClassPanel>(5);
 		for(String c: classList) {
 			loadingLabel.setText("Building class panel: "+c);
 			cache.put(c,new ClassPanel(c,icons));
+			loadBar.setValue(++progress);
 		}
-		loadBar.setValue(++progress);
+		long cachetime2 = System.nanoTime();
 		
 		loadingLabel.setText("Creating main GUI...");
 	//	splitpane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,true,null,classPanel);
@@ -445,7 +447,8 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 		nameField.requestFocusInWindow();
 		
 		long time2 = System.nanoTime();
-		System.out.println((time2-time1)/1000000000.0);
+		System.out.println("Cache load time: " + (cachetime2-cachetime1)/1000000000.0);
+		System.out.println("Full load time: " + (time2-time1)/1000000000.0);
 	/*	try {
 			Robot robot = new Robot();
 			robot.keyPress(KeyEvent.VK_CONTROL);
@@ -513,11 +516,15 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 				about.add(new JLabel("Copyright 2009 Imran Merchant"));
 				Box contact = Box.createHorizontalBox();
 				contact.add(new JLabel("Contact: "));
-				contact.add(new NameField("imerchant@gmail.com",icons));
+				NameField email = new NameField("imerchant@gmail.com",icons);
+				email.setSelectAllOnFocus(true);
+				contact.add(email);
 				about.add(contact);
 				Box web = Box.createHorizontalBox();
 				web.add(new JLabel("Website: "));
-				web.add(new NameField("http://pyreflies.nu/hench/TooHuman",icons));
+				NameField website = new NameField("http://pyreflies.nu/hench/TooHuman",icons);
+				website.setSelectAllOnFocus(true);
+				web.add(website);
 				about.add(web);
 				about.add(new JLabel(" "));
 				about.add(new JLabel("<html>All <i>Too Human</i> trademarks and copyrights are retained by"));
@@ -525,13 +532,19 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 				about.add(new JLabel(" "));
 				about.add(new JLabel("<html>Special thanks to <b>maawdawg</b>, <b>tmunee</b>, <b>MarkZ3</b>,"));
 				about.add(new JLabel("<html>and <b>AKAtheDopeman</b> of the excellent SiliconKnights.net"));
-				about.add(new NameField("http://www.siliconknights.net",icons));
+				NameField sknet = new NameField("http://www.siliconknights.net",icons);
+				sknet.setSelectAllOnFocus(true);
+				about.add(sknet);
 				about.add(new JLabel(" "));
 				about.add(new JLabel("Some skill icons courtesy of the very helpful Too Human wiki."));
-				about.add(new NameField("http://toohuman.wikia.com",icons));
+				NameField wiki = new NameField("http://toohuman.wikia.com",icons);
+				wiki.setSelectAllOnFocus(true);
+				about.add(wiki);
 				about.add(new JLabel(" "));
 				about.add(new JLabel("This software uses icons from the great Tango Desktop Project."));
-				about.add(new NameField("http://tango.freedesktop.org/Tango_Desktop_Project",icons));
+				NameField tango = new NameField("http://tango.freedesktop.org/Tango_Desktop_Project",icons);
+				tango.setSelectAllOnFocus(true);
+				about.add(tango);
 				about.add(new JLabel(" "));
 				about.add(new JLabel("<html>Skill details taken from the retail version of <i>Too Human</i>."));
 			}
@@ -689,6 +702,7 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 		}
 	}
 	private void open(boolean single, File file) {
+		if(!showPanel) showPanel = true;
 		try {
 			ObjectInputStream in = new ObjectInputStream(new FileInputStream(file));
 			if(single) {
@@ -708,7 +722,6 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 				setView(classPanel.getClassString());
 				nameField.setText(export[0].name);
 			}
-			if(!showPanel) showPanel = true;
 			pack();
 			in.close();
 		} catch(IOException ex){
