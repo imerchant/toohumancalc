@@ -1,5 +1,5 @@
 Too Human Skill Calculator by Imran Merchant
-Current Version: 2.6
+Current Version: 2.7
 Contact: imerchant@gmail.com
 http://pyreflies.nu/hench/TooHuman
 
@@ -31,6 +31,13 @@ PROGRAM WILL NOT WORK IN THIS CASE. The filetype must be .jar.
 Changelog:
 ==========
 
+Version 2.7
+* Added the ability to search for skills based on the title and description.
+  The find box pops up as a separate window, and the results are formatted
+  similarly to an older version of the calculator. Search results include
+  skill title, icon, and description, as well as the class or alignment
+  icon to make identification easier. Hit CTRL+F at any time to try it out!
+
 Version 2.6
 * More detail on the Alt+click box for changing skill points.
 * New Feature: CTRL+E when viewing a tree allows for the export of the 
@@ -39,7 +46,7 @@ Version 2.6
   overwriting files and the like. The past implementation was lacking
   considerably.
 * Updated some tango icons to more appropriate ones, as well as adding those
-  for the export to JPG function.
+  for the export to PNG function.
 * Added ability to view this Read Me within the program. It can also be
   found in the JAR archive.
 * Bug fix: finally fixed phantom points showing up and not going away on a

@@ -39,6 +39,7 @@ class SkillBox extends JPanel implements ChangeListener, java.io.Serializable, M
 	public SkillBox(String iconSource, String t, String d1, String d2, double multi, int max, Color col) {
 		super(new BorderLayout());
 		build(new ImageIcon(getClass().getResource(iconSrc)));
+		built = true;
 	}
 	public SkillBox(String d, double m, Color col) {
 		this(d,m,col,10);
@@ -113,6 +114,7 @@ class SkillBox extends JPanel implements ChangeListener, java.io.Serializable, M
 		}
 	}
 	public String getDescription() { return desc1; }
+	public String getDescriptionSecondLine() { return desc2; }
 	public String getFullDescription() { return desc1+"\n"+desc2; }
 	public String getTitle() { return title; }
 	public String getSpinnerLabelText() { return spinnerLabel.getText(); }

@@ -134,7 +134,7 @@ class ClassPanel extends JPanel implements ActionListener, java.io.Serializable,
 			skills[3][1] = new SkillBox(icons.get("bioengineer6"),"Ward of the NORNs","Spider: Deploys a protective shield that",
 				"absorbs damage.",3,10,YELLOW);
 			skills[4][1] = new SkillBox(icons.get("bioengineer9"),"Idunn's Favor","Battle Cry: Performs a large delayed heal",
-				"clears negative effects.",5,10,BLUE);
+				"and clears negative effects.",5,10,BLUE);
 			skills[5][1] = new SkillBox(icons.get("bioengineer12"),"Cellular Rebonding (Group Skill)","Increases maximum hit points.",
 				null,1,10,GREEN);
 			
@@ -256,7 +256,9 @@ class ClassPanel extends JPanel implements ActionListener, java.io.Serializable,
 		
 		trees.add(skillTree,BorderLayout.CENTER);
 		
-		alignTree = new AlignPanel("Human",this,this,icons);
+		for(String a: alignments)
+			cache.put(a,new AlignPanel(a,this,this,icons));
+		alignTree = cache.get("Human");
 		trees.add(alignTree,BorderLayout.EAST);
 		alignTree.setVisible(false);
 		
@@ -321,6 +323,7 @@ class ClassPanel extends JPanel implements ActionListener, java.io.Serializable,
 	}
 	public String getAlignment() { return alignString; }
 	public String getClassString() { return classString; }
+	public HashMap<String,AlignPanel> getCache() { return cache; }
 	public void actionPerformed(ActionEvent e){
 		String name = e.getActionCommand();
 		if(name.equals("Export"))
@@ -554,5 +557,8 @@ class ClassPanel extends JPanel implements ActionListener, java.io.Serializable,
 	}
 	public void showProgressBar(boolean show) {
 		if(progress != null) progress.setVisible(show);
+	}
+	public SkillBox[][] getSkillBoxes() {
+		return skills;
 	}
 }

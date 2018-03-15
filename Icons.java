@@ -59,6 +59,8 @@ public class Icons extends HashMap<String,ImageIcon> {
 		put("log out",new ImageIcon(c.getResource("imgs/tango/system-log-out.png")));
 		put("image x",new ImageIcon(c.getResource("imgs/tango/image-x-generic.png")));
 		put("text x",new ImageIcon(c.getResource("imgs/tango/text-x-generic.png")));
+		put("find",new ImageIcon(c.getResource("imgs/tango/edit-find.png")));
+		put("search",new ImageIcon(c.getResource("imgs/tango/system-search.png")));
 	}
 	public ImageIcon get(String s) {
 		return super.get(s);
