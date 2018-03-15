@@ -2,6 +2,9 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import java.util.*;
+import javax.imageio.*;
+import java.awt.image.*;
+import java.io.*;
 
 class ClassPanel extends JPanel implements ActionListener, java.io.Serializable,MouseListener,MouseWheelListener {
 	public static final long serialVersionUID = 386546547L;
@@ -17,6 +20,8 @@ class ClassPanel extends JPanel implements ActionListener, java.io.Serializable,
 	private Icons icons;
 	private boolean built = false;
 	private int total = 0;
+	private JFileChooser saveImage;
+	private ExtFilefilter filter;
 	private String classString = "none", alignString;
 	private String[] alignments = new String[] {"Human","Cybernetic"};
 	public String toString() { return classString; }
@@ -39,6 +44,12 @@ class ClassPanel extends JPanel implements ActionListener, java.io.Serializable,
 		icons = i;
 		cache = new HashMap<String,AlignPanel>(2);
 		
+		filter = new ExtFilefilter(".png","PNG images (*.png)");
+		saveImage = new JFileChooser(System.getProperty("user.dir"));
+		saveImage.setDialogType(JFileChooser.SAVE_DIALOG);
+		saveImage.setDialogTitle("Save trees as a PNG");
+		saveImage.setFileFilter(filter);
+		
 		Box topBox = Box.createHorizontalBox();
 		topBox.add(new JLabel("Character points used:  "));
 		topBox.add(pointsLabel = new JLabel("0/95"));
@@ -52,18 +63,24 @@ class ClassPanel extends JPanel implements ActionListener, java.io.Serializable,
 		progress = new JProgressBar(JProgressBar.HORIZONTAL,0,95);
 		progress.setStringPainted(true);
 		progress.setBorderPainted(false);
+		JButton export = new JButton("Export");
+		export.setToolTipText("Export trees as a PNG");
+		export.setIcon(icons.get("image x"));
+		export.addActionListener(this);
+		JButton reset = new JButton("Reset");
+		reset.setToolTipText("Reset trees to zero");
+		reset.setIcon(icons.get("refresh"));
+		reset.addActionListener(this);
 		JPanel topPanel = new JPanel(new BorderLayout());
 		topPanel.add(progress,BorderLayout.SOUTH);
 		topPanel.add(textBox,BorderLayout.CENTER);
-		JButton reset = new JButton("Reset");
-		reset.setIcon(icons.get("refresh"));
-		reset.addActionListener(this);
+		topPanel.add(export,BorderLayout.WEST);
 		topPanel.add(reset,BorderLayout.EAST);
 		add(topPanel,BorderLayout.NORTH);
 
 		int rows = classString.equals("Champion") ? 8 : 7;
 		JPanel skillTree = new JPanel(new GridLayout(rows,3,3,0));
-		skillTree.setBorder(BorderFactory.createTitledBorder("Skill tree"));
+		skillTree.setBorder(BorderFactory.createTitledBorder(classString + " skill tree"));
 		skills = new SkillBox[rows][3];
 		for(int k = 0; k < rows; k++)
 			for(int j = 0; j < 3; j++)
@@ -305,7 +322,10 @@ class ClassPanel extends JPanel implements ActionListener, java.io.Serializable,
 	public String getAlignment() { return alignString; }
 	public String getClassString() { return classString; }
 	public void actionPerformed(ActionEvent e){
-		if(e.getSource() instanceof JButton)
+		String name = e.getActionCommand();
+		if(name.equals("Export"))
+			exportAsPNG();
+		if(name.equals("Reset"))
 			zero();
 		if(e.getSource() instanceof SkillBox) {
 			SkillBox source = (SkillBox)e.getSource();
@@ -328,8 +348,8 @@ class ClassPanel extends JPanel implements ActionListener, java.io.Serializable,
 					skills[3+off][2].setEnabled(points >= 6);
 			} else if(source == skills[3+off][0]) {
 				if(points == 0) {
-					actionPerformed(new ActionEvent(skills[2][1],ActionEvent.ACTION_PERFORMED,"Reset"));
-					actionPerformed(new ActionEvent(skills[2][2],ActionEvent.ACTION_PERFORMED,"Reset"));
+					actionPerformed(new ActionEvent(skills[2][1],ActionEvent.ACTION_PERFORMED,"Update"));
+					actionPerformed(new ActionEvent(skills[2][2],ActionEvent.ACTION_PERFORMED,"Update"));
 				}
 				if(points > 0) {
 					skills[3+off][1].setEnabled(false);
@@ -338,8 +358,8 @@ class ClassPanel extends JPanel implements ActionListener, java.io.Serializable,
 				skills[4+off][0].setEnabled(points >= 4);
 			} else if(source == skills[3+off][1]) {
 				if(points == 0) {
-					actionPerformed(new ActionEvent(skills[2][0],ActionEvent.ACTION_PERFORMED,"Reset"));
-					actionPerformed(new ActionEvent(skills[2][2],ActionEvent.ACTION_PERFORMED,"Reset"));
+					actionPerformed(new ActionEvent(skills[2][0],ActionEvent.ACTION_PERFORMED,"Update"));
+					actionPerformed(new ActionEvent(skills[2][2],ActionEvent.ACTION_PERFORMED,"Update"));
 				}
 				if(points > 0) {
 					skills[3+off][0].setEnabled(false);
@@ -348,8 +368,8 @@ class ClassPanel extends JPanel implements ActionListener, java.io.Serializable,
 				skills[4+off][1].setEnabled(points >= 4);
 			} else if(source == skills[3+off][2]) {
 				if(points == 0) {
-					actionPerformed(new ActionEvent(skills[2][0],ActionEvent.ACTION_PERFORMED,"Reset"));
-					actionPerformed(new ActionEvent(skills[2][1],ActionEvent.ACTION_PERFORMED,"Reset"));
+					actionPerformed(new ActionEvent(skills[2][0],ActionEvent.ACTION_PERFORMED,"Update"));
+					actionPerformed(new ActionEvent(skills[2][1],ActionEvent.ACTION_PERFORMED,"Update"));
 				}
 				if(points > 0) {
 					skills[3+off][0].setEnabled(false);
@@ -433,6 +453,33 @@ class ClassPanel extends JPanel implements ActionListener, java.io.Serializable,
 				export.alignPoints.add(alignSkills[k][j].getPoints());
 		return export;
 	}
+	public boolean exportAsPNG() {
+		if(saveImage.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+			File file = saveImage.getSelectedFile();
+			if(!filter.acceptFile(file))
+				file = new File(file.getPath()+".png");
+			if(file.exists()) {
+				String[] choices = new String[] {"Overwrite","Choose another file","Cancel"};
+				int choice = JOptionPane.showOptionDialog(this,"A file with this name already exists.","Conflict!",
+					JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,
+					icons.get("doc save"),choices,choices[1]);
+				if(choice == 2 || choice == JOptionPane.CLOSED_OPTION) return false;
+				if(choice == 1) return exportAsPNG();
+			}
+			try {
+				Dimension treesSize = trees.getSize();
+				BufferedImage image = new BufferedImage(treesSize.width,treesSize.height,BufferedImage.TYPE_INT_RGB);
+				Graphics2D g = image.createGraphics();
+				trees.paint(g);
+				g.dispose();
+				ImageIO.write(image,"png",file);
+				return true;
+			} catch(java.io.IOException ex) {
+				JOptionPane.showMessageDialog(this,ex.getMessage(),"Error saving PNG!",JOptionPane.ERROR_MESSAGE);
+				return false;
+			}
+		} else return false;
+	}
 	public boolean equals(Object o) {
 		if(!(o instanceof ClassPanel)) return false;
 		return classString.equals(((ClassPanel)o).getClassString());
@@ -457,15 +504,18 @@ class ClassPanel extends JPanel implements ActionListener, java.io.Serializable,
 	}
 	public void mousePressed(MouseEvent e) {
 		SkillBox box = (SkillBox)e.getSource();
-		if(!e.isAltDown() && box.isEnabled())
+		if(!box.built() || !box.isEnabled() || !box.isVisible()) return;
+		if(!e.isAltDown())
 			increasePoints(!(e.isMetaDown() || e.isControlDown()),(SkillBox)e.getSource());
-		if(!box.isEnabled()) return;
 		if(e.isAltDown() && (e.isMetaDown() || e.isControlDown())) {
 			box.getPopup().show(box,e.getX(),e.getY());
 		}
 		if(e.isAltDown() && (!e.isMetaDown() && !e.isControlDown())) {
 			Object input = JOptionPane.showInputDialog(
-				box,"How many points?  Current:"+box.getSpinnerLabelText(),box.getTitle(),JOptionPane.QUESTION_MESSAGE,box.getIcon(),null,"");
+				box,
+				box.getFullDescription()+"\n\nSet point value to?  Current:"+box.getSpinnerLabelText(),
+				box.getTitle(),
+				JOptionPane.QUESTION_MESSAGE,box.getIcon(),null,"");
 			int in = 0;
 			if(input == null || ((String)input).trim().equals(""))
 				return;
@@ -491,7 +541,7 @@ class ClassPanel extends JPanel implements ActionListener, java.io.Serializable,
 		increasePoints(e.getWheelRotation() == -1,(SkillBox)e.getSource());
 	}
 	private void increasePoints(boolean up, SkillBox box) {
-		if(!box.isEnabled()) return;
+		if(!box.isEnabled() || !box.built()) return;
 		Integer next = null;
 		if(!up)
 			next = box.getPreviousValue();

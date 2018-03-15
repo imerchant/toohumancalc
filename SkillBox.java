@@ -113,6 +113,7 @@ class SkillBox extends JPanel implements ChangeListener, java.io.Serializable, M
 		}
 	}
 	public String getDescription() { return desc1; }
+	public String getFullDescription() { return desc1+"\n"+desc2; }
 	public String getTitle() { return title; }
 	public String getSpinnerLabelText() { return spinnerLabel.getText(); }
 	public Integer getNextValue() {

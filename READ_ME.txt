@@ -1,11 +1,14 @@
-Too Human Character Plotter by Imran Merchant
-Current Version: 2.5
+Too Human Skill Calculator by Imran Merchant
+Current Version: 2.6
 Contact: imerchant@gmail.com
 http://pyreflies.nu/hench/TooHuman
 
 Java program designed to simulate the skill and alignment trees from the
 Xbox 360 video game Too Human, developed by Silicon Knights and published
 by Microsoft. They retain all their trademarks and copyrights to it.
+
+Can save the trees either as a file to open in the plotter, or as a PNG
+image.
 
 REQUIRES JAVA RUNTIME ENVIRONMENT. Latest (1.6) is recommended, but will
 probably work in 1.5. The program will run on any system with Java
@@ -27,6 +30,24 @@ PROGRAM WILL NOT WORK IN THIS CASE. The filetype must be .jar.
 ==========
 Changelog:
 ==========
+
+Version 2.6
+* More detail on the Alt+click box for changing skill points.
+* New Feature: CTRL+E when viewing a tree allows for the export of the 
+  currently viewable trees as a PNG image.
+* Fixed the save feature on the files and PNG export to properly handle
+  overwriting files and the like. The past implementation was lacking
+  considerably.
+* Updated some tango icons to more appropriate ones, as well as adding those
+  for the export to JPG function.
+* Added ability to view this Read Me within the program. It can also be
+  found in the JAR archive.
+* Bug fix: finally fixed phantom points showing up and not going away on a
+  Reset. Had to do with how it was registering the clicks.
+* Bug fix: Massive bug: a reset command is done when re-checking spider
+  skills after lowering its parent below the pre-req. Don't know how long its
+  been doing that, but seems a long time. Glad that's fixed now. The path
+  restriction should work perfectly fine now.
 
 Version 2.5
 * Small bug fixes.

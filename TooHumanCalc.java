@@ -16,14 +16,15 @@ public class TooHumanCalc extends JFrame implements ActionListener, java.io.Seri
 	private JTextField nameField;
 	private JFileChooser save,open;
 	private HashMap<String,ClassPanel> cache;
-	private THFileFilter filter;
+	private ExtFilefilter filter;
 	private JProgressBar hitBar,meleeBar,ballisticsBar,armorBar;
 	private JCheckBoxMenuItem showProg;
 //	private JProgressBar[] hits, melees, ballistics, armors;
 	private JLabel specLabel;
 	private Icons icons;
+	private JFrame readFrame;
 	private boolean paintString = false, borderPainted = true;
-	private static final String version = "v2.5";
+	private static final String version = "v2.6";
 	private String[] classList = {"Berserker",
 								  "Defender",
 								  "Champion",
@@ -32,19 +33,19 @@ public class TooHumanCalc extends JFrame implements ActionListener, java.io.Seri
 					 alignList = {"Human",
 					 			  "Cybernetic"};
 	public TooHumanCalc() {
-		super("Too Human Character Plotter "+version);
+		super("Too Human Skill Calculator "+version);
 	//	long time1 = System.nanoTime();
 		UIManager.LookAndFeelInfo[] info = UIManager.getInstalledLookAndFeels();
 		String classname = /**info[4].getClassName();//*/ UIManager.getSystemLookAndFeelClassName();
 		try{UIManager.setLookAndFeel(classname);}catch(Exception e){}
 		
-	/*	String lafs[] = new String[info.length];
+/**		String lafs[] = new String[info.length];
 		for(int k = 0; k < lafs.length; k++)
 			lafs[k] = info[k].getClassName();
 		String option = (String)JOptionPane.showInputDialog(null,
 			"These are the currently installed look and feels. Choose one.\nClicking \"Cancel\" will use the current system look and feel.",
 			"Choose a look and feel.",JOptionPane.INFORMATION_MESSAGE,null,lafs,null);
-		try{UIManager.setLookAndFeel(option);}catch(Exception e){}*/
+		try{UIManager.setLookAndFeel(option);}catch(Exception e){}//*/
 		
 	//	setUndecorated(true);
 	//	setResizable(false);
@@ -60,7 +61,7 @@ public class TooHumanCalc extends JFrame implements ActionListener, java.io.Seri
 		JPanel loadingPanel = new JPanel(new BorderLayout());
 		JLabel loadingstatus = new JLabel("Status: ",SwingConstants.RIGHT);
 		JLabel loadingLabel = new JLabel("Loading. Please wait.",SwingConstants.CENTER);
-		JLabel title = new JLabel("<html><b>Too Human Character Plotter "+version,SwingConstants.CENTER);
+		JLabel title = new JLabel("<html><b>Too Human Skill Calculator "+version,SwingConstants.CENTER);
 		if(iconURL != null) { 
 			title.setIcon(new ImageIcon(iconURL));
 			dialog.setIconImage(getToolkit().createImage(iconURL));
@@ -69,7 +70,7 @@ public class TooHumanCalc extends JFrame implements ActionListener, java.io.Seri
 		JProgressBar loadBar = new JProgressBar(SwingConstants.HORIZONTAL,0,14);
 		int progress = 0;
 		loadBar.setIndeterminate(true);
-		loadBar.setBorderPainted(false);
+		loadBar.setBorderPainted(true);
 		loadBar.setStringPainted(true);
 		loadingBar.add(loadBar);
 		loadingBar.add(Box.createHorizontalStrut(15));
@@ -94,7 +95,7 @@ public class TooHumanCalc extends JFrame implements ActionListener, java.io.Seri
 		loadBar.setValue(++progress);
 		
 		loadingLabel.setText("Building filechoosers...");
-		filter = new THFileFilter();
+		filter = new ExtFilefilter(".thclass","Too Human Character Plotter files (*.thclass)");
 		save = new JFileChooser(System.getProperty("user.dir"));
 		save.setDialogType(JFileChooser.SAVE_DIALOG);
 		save.setDialogTitle("Save the current character");
@@ -131,9 +132,13 @@ public class TooHumanCalc extends JFrame implements ActionListener, java.io.Seri
 		JMenuItem saveItem = new JMenuItem("Save single...",KeyEvent.VK_A);
 		saveItem.setAccelerator(KeyStroke.getKeyStroke("ctrl alt S"));
 		saveMenu.add(saveItem).addActionListener(this);
+		JMenuItem exportItem = new JMenuItem("Export as PNG...",KeyEvent.VK_E);
+		exportItem.setAccelerator(KeyStroke.getKeyStroke("ctrl E"));
+		exportItem.setIcon(icons.get("image x"));
+		fileMenu.add(exportItem).addActionListener(this);
 		fileMenu.addSeparator();
 		JMenuItem exitItem = new JMenuItem("Exit",KeyEvent.VK_X);
-		exitItem.setIcon(icons.get("stop"));
+		exitItem.setIcon(icons.get("log out"));
 		exitItem.setAccelerator(KeyStroke.getKeyStroke("alt X"));
 		fileMenu.add(exitItem).addActionListener(this);
 		menubar.add(fileMenu);
@@ -152,6 +157,10 @@ public class TooHumanCalc extends JFrame implements ActionListener, java.io.Seri
 		helpItem.setIcon(icons.get("help"));
 		helpItem.setAccelerator(KeyStroke.getKeyStroke("F1"));
 		helpMenu.add(helpItem).addActionListener(this);
+		JMenuItem readMeItem = new JMenuItem("View READ ME",KeyEvent.VK_R);
+		readMeItem.setAccelerator(KeyStroke.getKeyStroke("F2"));
+		readMeItem.setIcon(icons.get("text x"));
+		helpMenu.add(readMeItem).addActionListener(this);
 		helpMenu.addSeparator();
 		JMenuItem aboutItem = new JMenuItem("About",KeyEvent.VK_A);
 		aboutItem.setIcon(icons.get("icon20"));
@@ -298,6 +307,11 @@ public class TooHumanCalc extends JFrame implements ActionListener, java.io.Seri
 		meleeBar.setString("MELEE");
 		ballisticsBar.setString("BALLISTICS");
 		armorBar.setString("ARMOR");*/
+	/*	Dimension dim = new Dimension(100,hitBar.getPreferredSize().height);
+		hitBar.setPreferredSize(dim);
+		meleeBar.setPreferredSize(dim);
+		ballisticsBar.setPreferredSize(dim);
+		armorBar.setPreferredSize(dim);*/
 		
 	/*	Dimension dim = new Dimension(20,hits[0].getPreferredSize().height);
 		for(int k = 0; k < hits.length; k++) {
@@ -334,7 +348,7 @@ public class TooHumanCalc extends JFrame implements ActionListener, java.io.Seri
 		profileBox.add(alignBox);
 		loadBar.setValue(++progress);
 		
-		loadingLabel.setText("Preloading class panels...");
+		loadingLabel.setText("Building class panels...");
 		classPanel = new ClassPanel();
 		cache = new HashMap<String,ClassPanel>(5);
 		for(String c: classList)
@@ -400,8 +414,23 @@ public class TooHumanCalc extends JFrame implements ActionListener, java.io.Seri
 			pack();
 		} else if(name.equals("Save single...")) {
 			if(save.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
-		//		if(save.getSelectedFile().exists()) JOptionPane.showMessageDialog(this,"blargh!");
-				File file = new File(save.getSelectedFile().getPath()+".thclass");
+				File file = save.getSelectedFile();
+				if(!filter.acceptFile(file))
+					file = new File(file.getPath()+".thclass");
+				String[] choices = new String[] {"Overwrite","Choose another file","Cancel"};
+				while(file.exists()) {
+					int choice = JOptionPane.showOptionDialog(this,"A file with this name already exists.","Conflict!",
+						JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,
+						icons.get("doc save"),choices,choices[1]);
+					if(choice == 0) break;
+					else if(choice == 1) {
+						if(save.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+							file = save.getSelectedFile();
+							if(!filter.acceptFile(file))
+								file = new File(file.getPath()+".thclass");
+						} else return;
+					} else return;
+				}
 				try {
 					ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file));
 					ClassExport export = classPanel.export();
@@ -421,7 +450,23 @@ public class TooHumanCalc extends JFrame implements ActionListener, java.io.Seri
 		} else if(name.equals("Save as...")) {
 			if(save.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
 		//		if(save.getSelectedFile().exists()) JOptionPane.showMessageDialog(this,"blargh!");
-				File file = new File(save.getSelectedFile().getPath()+".thclass");
+				File file = save.getSelectedFile();
+				if(!filter.acceptFile(file))
+					file = new File(file.getPath()+".thclass");
+				String[] choices = new String[] {"Overwrite","Choose another file","Cancel"};
+				while(file.exists()) {
+					int choice = JOptionPane.showOptionDialog(this,"A file with this name already exists.","Conflict!",
+						JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,
+						icons.get("doc save"),choices,choices[1]);
+					if(choice == 0) break;
+					else if(choice == 1) {
+						if(save.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+							file = save.getSelectedFile();
+							if(!filter.acceptFile(file))
+								file = new File(file.getPath()+".thclass");
+						} else return;
+					} else return;
+				}
 				try {
 					ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file));
 					ClassExport[] export = new ClassExport[5];
@@ -508,14 +553,15 @@ public class TooHumanCalc extends JFrame implements ActionListener, java.io.Seri
 				}
 			}
 		} else if(name.equals("About")) {
-			JOptionPane.showMessageDialog(this,"<html><u>Too Human Character Plotter (Java version) "+version+"</u>\n"+
-				"Copyright 2008 Imran Merchant\nContact: imerchant@gmail.com\n\n"+
+			JOptionPane.showMessageDialog(this,"<html><u>Too Human Skill Calculator (Java version) "+version+"</u>\n"+
+				"Copyright 2008 Imran Merchant\nContact: imerchant@gmail.com\n"+
+				"Website: http://pyreflies.nu/hench/TooHuman\n\n"+
 				"Too Human trademarks retained by Silicon Knights and Microsoft.\n\n"+
 				"Special thanks to maawdawg, tmunee, and MarkZ3 \nof the excellent TooHuman.net forums.\n\n"+
 				"Skill icons (partly) courtesy of the equally awesome \nToo Human wiki (http://toohuman.wikia.com).\n\n"+
 				"Some other icons part of the Tango Desktop Project\n(http://tango.freedesktop.org/Tango_Desktop_Project).\n\n"+
 				"Skill descriptions and stats taken from the retail version of Too Human.",
-				"About Too Human Character Plotter "+version,JOptionPane.INFORMATION_MESSAGE,icons.get("icon"));
+				"About Too Human Skill Calculator "+version,JOptionPane.INFORMATION_MESSAGE,icons.get("icon"));
 		} else if(name.equals("Help")) {
 			JOptionPane.showMessageDialog(this,"Select a class and alignment to view the trees.\n\n"+
 				"To add/remove points from a skill node:\n"+
@@ -525,12 +571,50 @@ public class TooHumanCalc extends JFrame implements ActionListener, java.io.Seri
 				"Save/Open normal vs. single:\n"+
 				"Use \"single\" for legacy (below v2.2) plotter files.\n"+
 				"New files save all classes, older files only contain one class.",
-				"Help: Too Human Character Plotter "+version,JOptionPane.INFORMATION_MESSAGE,
+				"Help: Too Human Skill Calculator "+version,JOptionPane.INFORMATION_MESSAGE,
 				icons.get("icon"));
 		} else if(name.equals("Reset")) {
 			classPanel.reset();
 		} else if(name.equals("Show progression bar")) {
 			classPanel.showProgressBar(showProg.isSelected());
+		} else if(name.contains("Export")) {
+			classPanel.exportAsPNG();
+		} else if(name.contains("READ")) {
+			if(readFrame == null) {
+				InputStream in = getClass().getResourceAsStream("READ_ME.txt");
+				if(in == null) {
+					JOptionPane.showMessageDialog(this,"The READ ME file could not be found.",
+						"Error reading READ ME",JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+				ArrayList<String> readme = new ArrayList<String>();
+				Scanner scan = new Scanner(in);
+				for(;scan.hasNextLine();readme.add(scan.nextLine()));
+				scan.close();
+				readFrame = new JFrame("READ_ME.txt");
+				readFrame.setIconImage(icons.get("text x").getImage());
+				Container pane = readFrame.getContentPane();
+				pane.setLayout(new BorderLayout());
+				JTextArea area = new JTextArea();
+				for(int k = 0; k < readme.size(); k++)
+					area.append(readme.get(k)+"\n");
+				area.setCaretPosition(0);
+				pane.add(new JScrollPane(area),BorderLayout.CENTER);
+				JPanel closePanel = new JPanel();
+				((JButton)closePanel.add(new JButton("Close"))).addActionListener(this);
+				pane.add(closePanel,BorderLayout.SOUTH);
+			}
+			if(readFrame.isVisible())
+				readFrame.requestFocus();
+			else {
+		//		readFrame.setLocation(150,150);
+				readFrame.setSize(650,500);
+				readFrame.setLocationRelativeTo(this);
+				readFrame.setDefaultCloseOperation(HIDE_ON_CLOSE);
+				readFrame.setVisible(true);
+			}
+		} else if(name.equals("Close")) {
+			readFrame.setVisible(false);
 		}
 	}
 	private void setView(String classString) {
@@ -680,14 +764,6 @@ public class TooHumanCalc extends JFrame implements ActionListener, java.io.Seri
 				"found on weapons. This path is damage focused.");
 		} else
 			aligndesc.setText("Select an alignment to see description.");
-	}
-	class THFileFilter extends javax.swing.filechooser.FileFilter {
-		public boolean accept(File f) {
-			return f != null && (f.isDirectory() || f.getName().contains(".thclass"));
-		}
-		public String getDescription() {
-			return "Too Human Character Plotter files (*.thclass)";
-		}
 	}
 	public static void main(String[] args) {
 //		JFrame.setDefaultLookAndFeelDecorated(true);
