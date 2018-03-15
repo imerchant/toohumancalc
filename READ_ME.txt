@@ -1,5 +1,5 @@
 Too Human Skill Calculator by Imran Merchant
-Current Version: 4.0
+Current Version: 4.1
 Contact: imerchant@gmail.com
 http://pyreflies.nu/hench/TooHuman
 
@@ -30,6 +30,12 @@ PROGRAM WILL NOT WORK IN THIS CASE. The filetype must be .jar.
 ==========
 Changelog:
 ==========
+
+Version 4.1
+* Small usability fixes.
+* Added confirmation dialogs to the Export and Reset functions.
+* Can now choose between two Export styles: including the details and notes
+  fields, or just the trees.
 
 Version 4.0
 * New skill, class, and alignment icons courtesy of SK.net member Axeman87!

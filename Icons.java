@@ -51,6 +51,7 @@ public class Icons extends HashMap<String,ImageIcon> {
 		put("champion14",new ImageIcon(c.getResource("imgs/champion14.png")));
 		
 		put("help",new ImageIcon(c.getResource("imgs/tango/help-browser.png")));
+		put("help32",new ImageIcon(c.getResource("imgs/tango/help-browser-32.png")));
 		put("refresh",new ImageIcon(c.getResource("imgs/tango/view-refresh.png")));
 		put("stop",new ImageIcon(c.getResource("imgs/tango/process-stop.png")));
 		put("folder",new ImageIcon(c.getResource("imgs/tango/folder.png")));
@@ -64,6 +65,7 @@ public class Icons extends HashMap<String,ImageIcon> {
 		put("find",new ImageIcon(c.getResource("imgs/tango/edit-find.png")));
 		put("search",new ImageIcon(c.getResource("imgs/tango/system-search.png")));
 		put("dialog warning",new ImageIcon(c.getResource("imgs/tango/dialog-warning.png")));
+		put("dialog warning 32",new ImageIcon(c.getResource("imgs/tango/dialog-warning-32.png")));
 		put("document open",new ImageIcon(c.getResource("imgs/tango/document-open.png")));
 		put("cut",new ImageIcon(c.getResource("imgs/tango/edit-cut.png")));
 		put("copy",new ImageIcon(c.getResource("imgs/tango/edit-copy.png")));

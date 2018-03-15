@@ -29,7 +29,7 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 	private NameField nameField;
 	private boolean paintString = false, borderPainted = true, showPanel = false, multibar = true;
 	private final String userdir = System.getProperty("user.dir");
-	private static final String version = "v4.0";
+	private static final String version = "v4.1";
 	private String[] classList = {"Berserker",
 								  "Defender",
 								  "Champion",
@@ -254,6 +254,11 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 			classMenu.add(j);
 			classCombo.addItem(name);
 		}
+		/* This adds an interesting black border to the combobox in the Windows 7 system LAF.
+		   Unsure how it translates to the others. How it looks in other LAfs may be
+		   why I removed it in the first place.
+		*/
+		classCombo.setBorder(null);
 		classCombo.setRenderer(this);
 		classCombo.addActionListener(this);
 		buttonsPanel.add(classCombo);
@@ -280,6 +285,11 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 			alignCombo.addItem(name);
 		}
 		aligngroup.add(clearItem = new JCheckBoxMenuItem("clear"));
+		/* This adds an interesting black border to the combobox in the Windows 7 system LAF.
+		   Unsure how it translates to the others. How it looks in other LAfs may be
+		   why I removed it in the first place.
+		*/
+		alignCombo.setBorder(null);
 		alignCombo.setRenderer(this);
 		alignCombo.addActionListener(this);
 		alignButtonPanel.add(alignCombo);
@@ -527,7 +537,7 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 			if(about == null) {
 				about = new JPanel(new GridLayout(19,0));
 				about.add(new JLabel("<html><u>Too Human Skill Calculator (Java version) "+version+"</u>"));
-				about.add(new JLabel("Copyright 2009 Imran Merchant"));
+				about.add(new JLabel("Copyright 2010 Imran Merchant"));
 				Box contact = Box.createHorizontalBox();
 				contact.add(new JLabel("Contact: "));
 				NameField email = new NameField("imerchant@gmail.com",icons);
@@ -763,7 +773,7 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 				"Error opening file!",JOptionPane.ERROR_MESSAGE);
 		}
 	}
-	public void pack() {
+	@Override public void pack() {
 		if(getExtendedState() != JFrame.NORMAL) return;
 		super.pack();
 		splitpane.resetToPreferredSizes();
@@ -845,7 +855,7 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 				armorBar.setValue(3);
 			}
 	//		specLabel.setText("<html>Air Combat<p>Critical Strikes");
-			classdesc.setText("The Champion represents ODIN's divine force of retribution. A strong warrior able "+
+			classdesc.setText("The Champion represents ODIN\'s divine force of retribution. A strong warrior able "+
 				"to deal out a wide variety of caustic force field and anti-gravity based effects, increasing the "+
 				"combat effectiveness of his allies. One-handed weapons are the Champion's chosen tools of combat.");
 		} else if(name.equals("Commando")) {
@@ -878,7 +888,7 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable,
 			}
 	//		specLabel.setText("<html>Defensive toughness<p>Hammer & Shield</html>");
 			classdesc.setText("With the blessings of ODIN and runes of protection, the Defender is the backbone of "+
-				"the Aesir’s defense. Heavy armor enables the Defender to absorb a tremendous amount of damage, "+
+				"the Aesir\'s defense. Heavy armor enables the Defender to absorb a tremendous amount of damage, "+
 				"leaving his allies to take the battle to the enemy unharried.");
 		} else {
 			if(multibar) {

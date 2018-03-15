@@ -436,6 +436,15 @@ class ClassPanel extends JPanel implements ActionListener, java.io.Serializable,
 	/*	skills[0][2].clear();
 		skills[1][1].clear();
 		total = 0;*/
+		String choices[] = new String[] {"Yes, reset 'em!","No, don't do it!"};
+	/*	JButton choices[] = new JButton[2];
+		choices[0] = new JButton("Yes, reset 'em!");
+		choices[0].setFocusPainted(false);
+		choices[1] = new JButton("No, don't do it!");
+		choices[1].setFocusPainted(false);*/
+		int choice = JOptionPane.showOptionDialog(this,"This cannot be undone! Are you sure?","Reset the trees?",JOptionPane.YES_NO_OPTION,
+			JOptionPane.WARNING_MESSAGE,icons.get("dialog warning 32"),choices,choices[1]);
+		if(choice == 1 || choice == JOptionPane.CLOSED_OPTION) return;
 		for(int k = 0; k < skills.length; k++)
 			for(int j = 0; j < skills[k].length; j++)
 				skills[k][j].setPoints(0);
@@ -496,6 +505,12 @@ class ClassPanel extends JPanel implements ActionListener, java.io.Serializable,
 		return export;
 	}
 	public boolean exportAsPNG(Component parent) {
+		String ch[] = new String[] {"Include details box","Just the trees","Cancel"};
+		int sel = JOptionPane.showOptionDialog(this,"Export the whole view, or just the trees?","All, some, or nothing?",
+			JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,
+			icons.get("help32"),ch,ch[1]);
+		if(sel == 2 || sel == JOptionPane.CLOSED_OPTION) return false;
+		boolean all = sel == 0;
 		Box det = Box.createVerticalBox();
 		det.add(new JLabel("Character points used: "+pointsLabel.getText()));
 		det.add(new JLabel(levelLabel.getText()));
@@ -503,8 +518,13 @@ class ClassPanel extends JPanel implements ActionListener, java.io.Serializable,
 		revalidate();
 		details.repaint();
 		repaint();
-		if(saveImage.showSaveDialog(parent) == JFileChooser.APPROVE_OPTION) {
-			File file = saveImage.getSelectedFile();
+		boolean loop;
+		File file;
+		do {
+			loop = false;
+			int save = saveImage.showSaveDialog(parent);
+			if(save != JFileChooser.APPROVE_OPTION) return false;
+			file = saveImage.getSelectedFile();
 			if(!filter.acceptFile(file))
 				file = new File(file.getPath()+".png");
 			if(file.exists()) {
@@ -513,21 +533,41 @@ class ClassPanel extends JPanel implements ActionListener, java.io.Serializable,
 					JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,
 					icons.get("dialog warning"),choices,choices[1]);
 				if(choice == 2 || choice == JOptionPane.CLOSED_OPTION) return false;
-				if(choice == 1) return exportAsPNG(parent);
+				if(choice == 1) loop = true;
 			}
-			try {
-				Dimension treesSize = splitpane.getSize();//trees.getSize();
-				BufferedImage image = new BufferedImage(treesSize.width,treesSize.height,BufferedImage.TYPE_INT_RGB);
-				Graphics2D g = image.createGraphics();
-				splitpane.paint(g);//trees.paint(g);
-				g.dispose();
-				ImageIO.write(image,"png",file);
-				return true;
-			} catch(java.io.IOException ex) {
-				JOptionPane.showMessageDialog(this,ex.getMessage(),"Error saving PNG!",JOptionPane.ERROR_MESSAGE);
-				return false;
+		} while(loop);
+		try {
+			Dimension treesSize = (all) ? splitpane.getSize() : trees.getSize();
+			BufferedImage image = new BufferedImage(treesSize.width,treesSize.height,BufferedImage.TYPE_INT_RGB);
+			Graphics2D g = image.createGraphics();
+			if(all)
+				splitpane.paint(g);
+			else
+				trees.paint(g);
+			g.dispose();
+			ImageIO.write(image,"png",file);
+			return true;
+		} catch(java.io.IOException ex) {
+			JOptionPane.showMessageDialog(this,ex.getMessage(),"Error saving PNG!",JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
+	/*	if(saveImage.showSaveDialog(parent) == JFileChooser.APPROVE_OPTION) {
+			File file = saveImage.getSelectedFile();
+			if(!filter.acceptFile(file))
+				file = new File(file.getPath()+".png");
+			if(file.exists()) {
+				boolean loop = false;
+				do {
+					String[] choices = new String[] {"Overwrite","Choose another file","Cancel"};
+					int choice = JOptionPane.showOptionDialog(this,"A file with this name already exists.","Conflict!",
+						JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,
+						icons.get("dialog warning"),choices,choices[1]);
+					if(choice == 2 || choice == JOptionPane.CLOSED_OPTION) return false;
+					if(choice == 1) loop = true;
+				} while(loop);
 			}
-		} else return false;
+			
+		} else return false;*/
 	}
 	public void setNotesText(String s) {
 		notesArea.setText(s);
