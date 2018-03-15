@@ -25,7 +25,7 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable 
 	private Icons icons;
 	private JFrame readFrame;
 	private boolean paintString = false, borderPainted = true;
-	private static final String version = "v2.7";
+	private static final String version = "v2.8";
 	private String[] classList = {"Berserker",
 								  "Defender",
 								  "Champion",
@@ -39,13 +39,13 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable 
 		UIManager.LookAndFeelInfo[] info = UIManager.getInstalledLookAndFeels();
 		String classname = /**info[4].getClassName();//*/ UIManager.getSystemLookAndFeelClassName();
 		try{UIManager.setLookAndFeel(classname);}catch(Exception e){}
-		
-/**		String lafs[] = new String[info.length];
+				
+/*	*/	String lafs[] = new String[info.length];
 		for(int k = 0; k < lafs.length; k++)
 			lafs[k] = info[k].getClassName();
 		String option = (String)JOptionPane.showInputDialog(null,
 			"These are the currently installed look and feels. Choose one.\nClicking \"Cancel\" will use the current system look and feel.",
-			"Choose a look and feel.",JOptionPane.INFORMATION_MESSAGE,null,lafs,null);
+			"Choose a look and feel.",JOptionPane.QUESTION_MESSAGE,null,lafs,UIManager.getSystemLookAndFeelClassName());
 		try{UIManager.setLookAndFeel(option);}catch(Exception e){}//*/
 		
 	//	setUndecorated(true);
@@ -73,12 +73,13 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable 
 		loadBar.setIndeterminate(true);
 		loadBar.setBorderPainted(true);
 		loadBar.setStringPainted(true);
-		loadingBar.add(loadBar);
-		loadingBar.add(Box.createHorizontalStrut(15));
-		((JButton)loadingBar.add(new JButton("Cancel"))).addActionListener(this);
 		JPanel labelPanel = new JPanel();
 		labelPanel.add(loadingstatus);
 		labelPanel.add(loadingLabel);
+		loadingBar.add(loadBar);
+		loadingBar.add(Box.createHorizontalStrut(15));
+		JButton cancelButton = new JButton("Cancel");
+		((JButton)loadingBar.add(cancelButton)).addActionListener(this);
 		loadingPanel.add(title,BorderLayout.NORTH);
 		loadingPanel.add(labelPanel,BorderLayout.CENTER);
 		loadingPanel.add(loadingBar,BorderLayout.SOUTH);
@@ -120,10 +121,11 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable 
 		saveMenu.setMnemonic(KeyEvent.VK_S);
 		fileMenu.add(saveMenu);
 		JMenuItem openNew = new JMenuItem("Open...",KeyEvent.VK_O);
-		openNew.setIcon(icons.get("folder open"));
+		openNew.setIcon(icons.get("document open"));
 		openNew.setAccelerator(KeyStroke.getKeyStroke("ctrl O"));
 		openMenu.add(openNew).addActionListener(this);
 		JMenuItem openItem = new JMenuItem("Open single...",KeyEvent.VK_P);
+		openItem.setIcon(icons.get("folder open"));
 		openItem.setAccelerator(KeyStroke.getKeyStroke("ctrl alt O"));
 		openMenu.add(openItem).addActionListener(this);
 		JMenuItem saveNew = new JMenuItem("Save as...",KeyEvent.VK_S);
@@ -131,6 +133,7 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable 
 		saveNew.setAccelerator(KeyStroke.getKeyStroke("ctrl S"));
 		saveMenu.add(saveNew).addActionListener(this);
 		JMenuItem saveItem = new JMenuItem("Save single...",KeyEvent.VK_A);
+		saveItem.setIcon(icons.get("doc save as"));
 		saveItem.setAccelerator(KeyStroke.getKeyStroke("ctrl alt S"));
 		saveMenu.add(saveItem).addActionListener(this);
 		JMenuItem exportItem = new JMenuItem("Export as PNG...",KeyEvent.VK_E);
@@ -191,6 +194,12 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable 
 		loadBar.setValue(++progress);
 		
 		loadingLabel.setText("Building class buttons...");
+		JMenuItem resetItem = new JMenuItem("Reset",KeyEvent.VK_R);
+		resetItem.setIcon(icons.get("refresh"));
+		resetItem.setAccelerator(KeyStroke.getKeyStroke("F5"));
+		resetItem.addActionListener(this);
+		classMenu.add(resetItem);
+		classMenu.addSeparator();
 		classgroup = new ButtonGroup();
 		classMenuGroup = new ButtonGroup();
 		classbuttons = new HashMap<String,JRadioButtonMenuItem>(classList.length);
@@ -213,12 +222,6 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable 
 			classMenuGroup.add(ji);
 			classMenu.add(ji);
 		}
-		classMenu.addSeparator();
-		JMenuItem resetItem = new JMenuItem("Reset",KeyEvent.VK_R);
-		resetItem.setIcon(icons.get("refresh"));
-		resetItem.setAccelerator(KeyStroke.getKeyStroke("F5"));
-		resetItem.addActionListener(this);
-		classMenu.add(resetItem);
 		profileBox.add(buttonsPanel);
 		loadBar.setValue(++progress);
 		
@@ -416,145 +419,18 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable 
 			classPanel.updateUI();
 			repaint();
 			pack();
-		} else if(name.equals("Save single...")) {
+		} else if(name.contains("Save")) {
 			if(save.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
-				File file = save.getSelectedFile();
-				if(!filter.acceptFile(file))
-					file = new File(file.getPath()+".thclass");
-				String[] choices = new String[] {"Overwrite","Choose another file","Cancel"};
-				while(file.exists()) {
-					int choice = JOptionPane.showOptionDialog(this,"A file with this name already exists.","Conflict!",
-						JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,
-						icons.get("doc save"),choices,choices[1]);
-					if(choice == 0) break;
-					else if(choice == 1) {
-						if(save.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
-							file = save.getSelectedFile();
-							if(!filter.acceptFile(file))
-								file = new File(file.getPath()+".thclass");
-						} else return;
-					} else return;
-				}
-				try {
-					ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file));
-					ClassExport export = classPanel.export();
-					export.name = nameField.getText();
-			//		System.out.println(export);
-					out.writeObject(export);
-					out.flush();
-					out.close();
-				} catch(IOException ex){
-					JOptionPane.showMessageDialog(this,"There was an error saving the file:\n"+ex.getMessage(),
-						"Error saving file!",JOptionPane.ERROR_MESSAGE);
-				} catch(NullPointerException ex) {
-					JOptionPane.showMessageDialog(this,"There was an error saving the file:\n"+ex.getMessage(),
-						"Error saving file!",JOptionPane.ERROR_MESSAGE);
-				}
+				save(name.contains("single"),save.getSelectedFile());
 			}
-		} else if(name.equals("Save as...")) {
-			if(save.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
-		//		if(save.getSelectedFile().exists()) JOptionPane.showMessageDialog(this,"blargh!");
-				File file = save.getSelectedFile();
-				if(!filter.acceptFile(file))
-					file = new File(file.getPath()+".thclass");
-				String[] choices = new String[] {"Overwrite","Choose another file","Cancel"};
-				while(file.exists()) {
-					int choice = JOptionPane.showOptionDialog(this,"A file with this name already exists.","Conflict!",
-						JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,
-						icons.get("doc save"),choices,choices[1]);
-					if(choice == 0) break;
-					else if(choice == 1) {
-						if(save.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
-							file = save.getSelectedFile();
-							if(!filter.acceptFile(file))
-								file = new File(file.getPath()+".thclass");
-						} else return;
-					} else return;
-				}
-				try {
-					ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file));
-					ClassExport[] export = new ClassExport[5];
-					export[0] = classPanel.export();
-					export[0].name = nameField.getText();
-					int k = 1;
-					for(ClassPanel c: cache.values())
-						if(!classPanel.equals(c))
-							export[k++] = c.export();
-					for(ClassExport c: export) {
-		//				System.out.println(c);
-						out.writeObject(c);
-					}
-					out.flush();
-					out.close();
-				} catch(IOException ex){
-					JOptionPane.showMessageDialog(this,"There was an error saving the file:\n"+ex.getMessage(),
-						"Error saving file!",JOptionPane.ERROR_MESSAGE);
-				} catch(NullPointerException ex) {
-					JOptionPane.showMessageDialog(this,"There was an error saving the file:\n"+ex.getMessage(),
-						"Error saving file!",JOptionPane.ERROR_MESSAGE);
-				}
-			}
-		} else if(name.equals("Open...")) {
-		/*	FileDialog fd = new FileDialog(this,"Open a character",FileDialog.LOAD);
-			fd.setFilenameFilter(filter);
-			fd.setVisible(true);
-			System.out.println(fd.getFile());*/
+		} else if(name.contains("Open")) {
 			if(open.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-				File file = open.getSelectedFile();
-				try {
-					ObjectInputStream in = new ObjectInputStream(new FileInputStream(file));
-					ClassExport[] export = new ClassExport[5];
-					for(int k = 0; k < 5; export[k++] = (ClassExport)in.readObject());
-					splitpane.setRightComponent(null);
-					classPanel = new ClassPanel(export[0],icons);
-					cache.put(classPanel.getClassString(),classPanel);
-					for(int k = 1; k < 5; cache.put(export[k].classString,new ClassPanel(export[k++],icons)));
-					classgroup.setSelected(classbuttons.get(classPanel.getClassString()).getModel(),true);
-					classMenuGroup.setSelected(classMenuButtons.get(classPanel.getClassString()).getModel(),true);
-					if(classPanel.getAlignment() != null)
-						aligngroup.setSelected(alignbuttons.get(classPanel.getAlignment()).getModel(),true);
-					classPanel.setVisible(true);
-					splitpane.setRightComponent(classPanel);
-					nameField.setText(export[0].name);
-					setClassDescText(export[0].classString);
-					setAlignDescText(export[0].alignString);
-					pack();
-					in.close();
-				} catch(IOException ex){
-					JOptionPane.showMessageDialog(this,"There was an error opening the file:\n"+ex.getMessage(),
-						"Error opening file!",JOptionPane.ERROR_MESSAGE);
-				} catch(ClassNotFoundException ex){
-					JOptionPane.showMessageDialog(this,"There was an error opening the file:\n"+ex.getMessage(),
-						"Error opening file!",JOptionPane.ERROR_MESSAGE);
-				}
+				open(name.contains("single"),open.getSelectedFile());
 			}
 		} else if(name.equals("Open single...")) {
 			if(open.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
 				File file = open.getSelectedFile();
-				try {
-					ObjectInputStream in = new ObjectInputStream(new FileInputStream(file));
-					ClassExport export = (ClassExport)in.readObject();
-					splitpane.setRightComponent(null);
-					classPanel = new ClassPanel(export,icons);
-					cache.put(classPanel.getClassString(),classPanel);
-					classgroup.setSelected(classbuttons.get(classPanel.getClassString()).getModel(),true);
-					classMenuGroup.setSelected(classMenuButtons.get(classPanel.getClassString()).getModel(),true);
-					if(classPanel.getAlignment() != null)
-						aligngroup.setSelected(alignbuttons.get(classPanel.getAlignment()).getModel(),true);
-					classPanel.setVisible(true);
-					splitpane.setRightComponent(classPanel);
-					nameField.setText(export.name);
-					setClassDescText(export.classString);
-					setAlignDescText(export.alignString);
-					pack();
-					in.close();
-				} catch(IOException ex){
-					JOptionPane.showMessageDialog(this,"There was an error opening the file:\n"+ex.getMessage(),
-						"Error opening file!",JOptionPane.ERROR_MESSAGE);
-				} catch(ClassNotFoundException ex){
-					JOptionPane.showMessageDialog(this,"There was an error opening the file:\n"+ex.getMessage(),
-						"Error opening file!",JOptionPane.ERROR_MESSAGE);
-				}
+				open(true,file);
 			}
 		} else if(name.equals("About")) {
 			JOptionPane.showMessageDialog(this,"<html><u>Too Human Skill Calculator (Java version) "+version+"</u>\n"+
@@ -582,7 +458,7 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable 
 		} else if(name.equals("Show progression bar")) {
 			classPanel.showProgressBar(showProg.isSelected());
 		} else if(name.contains("Export")) {
-			classPanel.exportAsPNG();
+			classPanel.exportAsPNG(this);
 		} else if(name.contains("READ")) {
 			if(readFrame == null) {
 				InputStream in = getClass().getResourceAsStream("READ_ME.txt");
@@ -600,6 +476,7 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable 
 				Container pane = readFrame.getContentPane();
 				pane.setLayout(new BorderLayout());
 				JTextArea area = new JTextArea();
+				area.setFont(getFont());
 				for(int k = 0; k < readme.size(); k++)
 					area.append(readme.get(k)+"\n");
 				area.setCaretPosition(0);
@@ -612,7 +489,7 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable 
 				readFrame.requestFocus();
 			else {
 		//		readFrame.setLocation(150,150);
-				readFrame.setSize(700,500);
+				readFrame.setSize(550,500);
 				readFrame.setLocationRelativeTo(this);
 				readFrame.setDefaultCloseOperation(HIDE_ON_CLOSE);
 				readFrame.setVisible(true);
@@ -634,7 +511,7 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable 
 	private void setView(String classString) {
 		splitpane.setRightComponent(null);
 		if(cache.size() == 0 || cache.get(classString) == null) {
-			classPanel = new ClassPanel(classString/*,this*/,icons);
+			classPanel = new ClassPanel(classString,icons);
 			cache.put(classString,classPanel);
 		} else if(cache.get(classString) != null) {
 			classPanel = cache.get(classString);
@@ -642,6 +519,97 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable 
 		classPanel.showProgressBar(showProg.isSelected());
 		classPanel.setVisible(true);
 		splitpane.setRightComponent(classPanel);
+	}
+	private void save(boolean single, File file) {
+		if(!filter.acceptFile(file))
+			file = new File(file.getPath()+".thclass");
+		String[] choices = new String[] {"Overwrite","Choose another file","Cancel"};
+		while(file.exists()) {
+			int choice = JOptionPane.showOptionDialog(this,"A file with this name already exists.","Conflict!",
+				JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,
+				icons.get("dialog warning"),choices,choices[1]);
+			if(choice == 0) break;
+			else if(choice == 1) {
+				if(save.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+					file = save.getSelectedFile();
+					if(!filter.acceptFile(file))
+						file = new File(file.getPath()+".thclass");
+				} else return;
+			} else return;
+		}
+		try {
+			ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file));
+			if(single) {
+				ClassExport export = classPanel.export();
+				export.name = nameField.getText();
+		//		System.out.println(export);
+				out.writeObject(export);
+			} else {
+				ClassExport[] export = new ClassExport[5];
+				export[0] = classPanel.export();
+				export[0].name = nameField.getText();
+				int k = 1;
+				for(ClassPanel c: cache.values())
+					if(!classPanel.equals(c))
+						export[k++] = c.export();
+				for(ClassExport c: export) {
+		//			System.out.println(c);
+					out.writeObject(c);
+				}
+			}
+			out.flush();
+			out.close();
+		} catch(IOException ex){
+			JOptionPane.showMessageDialog(this,"There was an error saving the file:\n"+ex.getMessage(),
+				"Error saving file!",JOptionPane.ERROR_MESSAGE);
+		} catch(NullPointerException ex) {
+			JOptionPane.showMessageDialog(this,"There was an error saving the file:\n"+ex.getMessage(),
+				"Error saving file!",JOptionPane.ERROR_MESSAGE);
+		}
+	}
+	private void open(boolean single, File file) {
+		try {
+			ObjectInputStream in = new ObjectInputStream(new FileInputStream(file));
+			if(single) {
+				ClassExport export = (ClassExport)in.readObject();
+				splitpane.setRightComponent(null);
+				classPanel = new ClassPanel(export,icons);
+				cache.put(classPanel.getClassString(),classPanel);
+				classgroup.setSelected(classbuttons.get(classPanel.getClassString()).getModel(),true);
+				classMenuGroup.setSelected(classMenuButtons.get(classPanel.getClassString()).getModel(),true);
+				if(classPanel.getAlignment() != null)
+					aligngroup.setSelected(alignbuttons.get(classPanel.getAlignment()).getModel(),true);
+				classPanel.setVisible(true);
+				splitpane.setRightComponent(classPanel);
+				nameField.setText(export.name);
+				setClassDescText(export.classString);
+				setAlignDescText(export.alignString);
+			} else {
+				ClassExport[] export = new ClassExport[5];
+				for(int k = 0; k < 5; export[k++] = (ClassExport)in.readObject());
+				splitpane.setRightComponent(null);
+				classPanel = new ClassPanel(export[0],icons);
+				cache.put(classPanel.getClassString(),classPanel);
+				for(int k = 1; k < 5; cache.put(export[k].classString,new ClassPanel(export[k++],icons)));
+				classgroup.setSelected(classbuttons.get(classPanel.getClassString()).getModel(),true);
+				classMenuGroup.setSelected(classMenuButtons.get(classPanel.getClassString()).getModel(),true);
+				if(classPanel.getAlignment() != null)
+					aligngroup.setSelected(alignbuttons.get(classPanel.getAlignment()).getModel(),true);
+				classPanel.setVisible(true);
+				splitpane.setRightComponent(classPanel);
+				nameField.setText(export[0].name);
+				setClassDescText(export[0].classString);
+				setAlignDescText(export[0].alignString);
+			}
+			pack();
+			in.close();
+		} catch(IOException ex){
+			JOptionPane.showMessageDialog(this,"There was an error opening the file:\n"+ex.getMessage(),
+				"Error opening file!",JOptionPane.ERROR_MESSAGE);
+		} catch(ClassNotFoundException ex){
+			JOptionPane.showMessageDialog(this,"There was an error opening the file:\n"+ex.getMessage(),
+				"Error opening file!",JOptionPane.ERROR_MESSAGE);
+		}
 	}
 	public void pack() {
 		if(getExtendedState() != JFrame.NORMAL) return;
@@ -741,7 +709,7 @@ public class TooHumanCalc extends JFrame implements ActionListener,Serializable 
 			specLabel.setText("<html>Defensive toughness<p>Hammer & Shield</html>");
 			classdesc.setText("With the blessings of ODIN and runes of protection, the Defender is the backbone of "+
 				"the Aesir’s defense. Heavy armor enables the Defender to absorb a tremendous amount of damage, "+
-				"leaving his allies to take the battle to the enemy unhindered.");
+				"leaving his allies to take the battle to the enemy unharried.");
 		} else {
 		/*	setBars(hits,0);
 			setBars(melees,0);

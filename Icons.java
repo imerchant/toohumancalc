@@ -56,11 +56,14 @@ public class Icons extends HashMap<String,ImageIcon> {
 		put("folder open",new ImageIcon(c.getResource("imgs/tango/folder-open.png")));
 		put("floppy",new ImageIcon(c.getResource("imgs/tango/media-floppy.png")));
 		put("doc save",new ImageIcon(c.getResource("imgs/tango/document-save.png")));
+		put("doc save as",new ImageIcon(c.getResource("imgs/tango/document-save-as.png")));
 		put("log out",new ImageIcon(c.getResource("imgs/tango/system-log-out.png")));
 		put("image x",new ImageIcon(c.getResource("imgs/tango/image-x-generic.png")));
 		put("text x",new ImageIcon(c.getResource("imgs/tango/text-x-generic.png")));
 		put("find",new ImageIcon(c.getResource("imgs/tango/edit-find.png")));
 		put("search",new ImageIcon(c.getResource("imgs/tango/system-search.png")));
+		put("dialog warning",new ImageIcon(c.getResource("imgs/tango/dialog-warning.png")));
+		put("document open",new ImageIcon(c.getResource("imgs/tango/document-open.png")));
 	}
 	public ImageIcon get(String s) {
 		return super.get(s);

@@ -33,16 +33,16 @@ class AlignPanel extends JPanel implements ActionListener, java.io.Serializable 
 		if(align.equals("Human")) {
 			skills[0][1] = new SkillBox(icons.get("Human1"),"The Everburning Heart","Decrease combo fuel cost by hit counter.",
 				"Bonuses applied at 25, 50, 75, 100, and 150.",2,5,CYAN);
-			skills[1][1] = new SkillBox(icons.get("Human2"),"Hero's Heart","Increases melee attack speed.",null,2);
+			skills[1][1] = new SkillBox(icons.get("Human2"),"Hero's Heart","Increases melee attack speed.",null,2,10,CYAN);
 			
-			skills[2][0] = new SkillBox(icons.get("Human3"),"Calm Under Fire","Increases reload speed.",null,2.5);
+			skills[2][0] = new SkillBox(icons.get("Human3"),"Calm Under Fire","Increases reload speed.",null,2.5,10,CYAN);
 			skills[3][0] = new SkillBox(icons.get("Human5"),"A Need To Survive","Increases Ballistic rate of fire.",
 				null,2,10,CYAN);
 			skills[4][0] = new SkillBox(icons.get("Human7"),"Daring Shot","Increases chance of shots ricocheting",
 				"and hitting additional enemies.",2,10,CYAN);
 			
 			skills[2][2] = new SkillBox(icons.get("Human4"),"Desire to Overcome","Increases Fierce attack range.",
-				null,2);
+				null,2,10,CYAN);
 			skills[3][2] = new SkillBox(icons.get("Human6"),"Call of Ruin","Increases Ruiner attack damage.",
 				null,2,10,CYAN);
 			skills[4][2] = new SkillBox(icons.get("Human8"),"Spirit Renewal","Decreases Spider recharge time.",

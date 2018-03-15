@@ -1,5 +1,5 @@
 Too Human Skill Calculator by Imran Merchant
-Current Version: 2.7
+Current Version: 2.8
 Contact: imerchant@gmail.com
 http://pyreflies.nu/hench/TooHuman
 
@@ -30,6 +30,15 @@ PROGRAM WILL NOT WORK IN THIS CASE. The filetype must be .jar.
 ==========
 Changelog:
 ==========
+
+Version 2.8
+* Added the ability to filter the Find-a-Skill by class and alignment. Also
+  did some rearrangement of the GUI on the Find-a-Skill dialog.
+* Added some detail to the spiders and battle-cry descriptions, and fixed some
+  small errors in a few other skill nodes.
+* Added Tango icons to some menu options that were lacking them.
+* Changed the READ_ME viewer frame to use the system LAF font, rather than
+  whatever it wanted.
 
 Version 2.7
 * Added the ability to search for skills based on the title and description.

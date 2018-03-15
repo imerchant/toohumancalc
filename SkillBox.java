@@ -7,7 +7,7 @@ import java.text.DecimalFormat;
 class SkillBox extends JPanel implements ChangeListener, java.io.Serializable, MouseListener, ActionListener {
 	public static final long serialVersionUID = -3456235547L;
 	private ImageIcon icon;
-	private String desc1,desc2,iconSrc,title;
+	private String desc1,desc2,iconSrc,title,levelBonus;
 	private double multiplier;
 	private int maximum;
 	private ActionListener dep;
@@ -19,36 +19,20 @@ class SkillBox extends JPanel implements ChangeListener, java.io.Serializable, M
 	private JSpinner points = new JSpinner(new SpinnerNumberModel(0,0,10,1));
 	private JPopupMenu popup;
 	public SkillBox() {}
-	public SkillBox(ImageIcon i, String t, String d1, String d2, double multi) {
-		this(i,t,d1,d2,multi,10,Color.cyan);
-	}
-	public SkillBox(String iconSource, String t, String d1, String d2, double multi) {
-		this(iconSource,t,d1,d2,multi,10,Color.cyan);
-	}
 	public SkillBox(ImageIcon i, String t, String d1, String d2, double multi, int max, Color col) {
+		this(i,t,d1,d2,null,multi,max,col);
+	}
+	public SkillBox(ImageIcon i, String t, String d1, String d2, String lB, double multi, int max, Color col) {
 		super(new BorderLayout());
 		title = t;
 		desc1 = d1;
 		desc2 = d2;
+		levelBonus = lB;
 		multiplier = multi;
 		maximum = max;
 		bg = col;
 		build(i);
 		built = true;
-	}
-	public SkillBox(String iconSource, String t, String d1, String d2, double multi, int max, Color col) {
-		super(new BorderLayout());
-		build(new ImageIcon(getClass().getResource(iconSrc)));
-		built = true;
-	}
-	public SkillBox(String d, double m, Color col) {
-		this(d,m,col,10);
-	}
-	public SkillBox(String de, double m, Color col, int max) {
-		this("unknown.png","title",de,null,m,max,col);
-	}
-	public SkillBox(String d, double m) {
-		this(d,m,Color.cyan,10);
 	}
 	private void build(ImageIcon i) {
 		icon = i;
@@ -67,6 +51,8 @@ class SkillBox extends JPanel implements ChangeListener, java.io.Serializable, M
 		details.add(new JLabel(desc1));
 		details.add(new JLabel(desc2));
 		details.add(new JLabel("<html></html"));
+		if(levelBonus != null)
+			details.add(new JLabel("Level Bonus: "+levelBonus));
 		details.add(percent);
 		details.add(new JLabel("Each Level Bonus: +"+multiplier+"%"));
 		details.add(maxLabel);
@@ -113,6 +99,7 @@ class SkillBox extends JPanel implements ChangeListener, java.io.Serializable, M
 			spinnerLabel.setText(text);
 		}
 	}
+	public String getLevelBonus() { return levelBonus; }
 	public String getDescription() { return desc1; }
 	public String getDescriptionSecondLine() { return desc2; }
 	public String getFullDescription() { return desc1+"\n"+desc2; }
@@ -123,6 +110,9 @@ class SkillBox extends JPanel implements ChangeListener, java.io.Serializable, M
 	}
 	public Integer getPreviousValue() {
 		return (Integer)points.getPreviousValue();
+	}
+	public Integer getValue() {
+		return (Integer)points.getValue();
 	}
 	public ImageIcon getIcon() { return icon; }
 	public JPopupMenu getPopup() { return popup; }

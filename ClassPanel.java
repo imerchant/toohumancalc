@@ -85,8 +85,8 @@ class ClassPanel extends JPanel implements ActionListener, java.io.Serializable,
 		for(int k = 0; k < rows; k++)
 			for(int j = 0; j < 3; j++)
 				skills[k][j] = new SkillBox();
-		skills[0][2] = new SkillBox(icons.get("ruiner"),"Human Spiritual Ruiner","Increases spiritual Ruiner radius.",
-			"Ruiners require 1 combo level to activate.",100,5,Color.lightGray);
+		skills[0][2] = new SkillBox(icons.get("ruiner"),"Human Spiritual Ruiner","Unleash your devestating Human spiritual ruiner.",
+			"Ruiners require 1 combo level to activate.","Increases Ruiner radius.",100,5,Color.lightGray);
 		int off = 0;
 		if(classString.equals("Berserker")) {
 			skills[1][1] = new SkillBox(icons.get("berserker1"),"A Capacity for Rage (Group Skill)","Level 1-9: Increases combo meter growth rate.",
@@ -94,26 +94,27 @@ class ClassPanel extends JPanel implements ActionListener, java.io.Serializable,
 			
 			skills[2][0] = new SkillBox(icons.get("berserker2"),"The Bear's Boiling Blood","Increases attack speed with hit counter.",
 				null,1,10,CYAN);
-			skills[3][0] = new SkillBox(icons.get("berserker5"),"Loki's Kiss","Spider: Deploys an enemy-seeking sticky bomb.",null,5,10,YELLOW);
+			skills[3][0] = new SkillBox(icons.get("berserker5"),"Loki's Kiss","Spider: Deploys an enemy-seeking sticky bomb."
+				,null,"Increases damage.",5,10,YELLOW);
 			skills[4][0] = new SkillBox(icons.get("berserker8"),"Swift of Claw","Battle Cry: Increases melee attack speed.",
-				"Also affects co-op party.",3,10,BLUE);
+				"Also affects co-op party.","Increases speed and duration.",3,10,BLUE);
 			skills[5][0] = new SkillBox(icons.get("berserker11"),"Unrelenting Blades","Increases Dual-Wield weapon attack speed.",
 				null,2,10,CYAN);
 			
 			skills[2][1] = new SkillBox(icons.get("berserker3"),"Onslaught of Claws","Increases Fierce attack speed.",
 				null,5,10,CYAN);
 			skills[3][1] = new SkillBox(icons.get("berserker6"),"Ankle Biter","Spider: Deploys a turret which slows enemies",
-				"hit by its fire.",5,10,YELLOW);
+				"hit by its fire.","Increases damage and snare duration.",5,10,YELLOW);
 			skills[4][1] = new SkillBox(icons.get("berserker9"),"Engulfing Rage","Battle Cry: Increases movement speed and adds",
-				"knockback to all attacks. Affects party.",5,10,BLUE);
+				"knockback to all attacks. Affects party.","Increases speed and duration.",5,10,BLUE);
 			skills[5][1] = new SkillBox(icons.get("berserker12"),"Weapon Recovery","Increases slide attack speed.",null,1,10,CYAN);
 			
 			skills[2][2] = new SkillBox(icons.get("berserker4"),"Brutality","Increases chance of channeling last damage",
 				"taken into bonus damage on the next attack.",5,10,CYAN);
 			skills[3][2] = new SkillBox(icons.get("berserker7"),"Sleep-Storm of Steel","Spider: Deploys a mine that explodes on contact.",
-				null,5,10,YELLOW);
+				null,"Increases damage and radius.",5,10,YELLOW);
 			skills[4][2] = new SkillBox(icons.get("berserker10"),"Shield Biter","Battle Cry: Increases melee attack damage.",
-				"Also affects co-op party.",6,10,BLUE);
+				"Also affects co-op party.","Increases damage and duration.",6,10,BLUE);
 			skills[5][2] = new SkillBox(icons.get("berserker13"),"Warrior of the Twinned-Claw","Increases Dual-Wield Weapon damage.",
 				null,3,10,CYAN);
 		} else if(classString.equals("BioEngineer")) {
@@ -123,27 +124,27 @@ class ClassPanel extends JPanel implements ActionListener, java.io.Serializable,
 			skills[2][0] = new SkillBox(icons.get("bioengineer2"),"Skuld's Embrace","Increases chance that enemies hit with",
 				"attacks will turn on their allies.",.5,10,CYAN);
 			skills[3][0] = new SkillBox(icons.get("bioengineer5"),"Wrack of Lightning Mine","Spider: Deploys an EMP mine that",
-				"disables machine foes for a period of time.",5,10,YELLOW);
+				"disables machine foes for a period of time.","Increases damage and radius.",5,10,YELLOW);
 			skills[4][0] = new SkillBox(icons.get("bioengineer8"),"Idunn's Boon","Battle Cry: Immediately performs a minor",
-				"heal and clears negative effects.",3.5,10,BLUE);
+				"heal and clears negative effects.","Increases heal amount.",3.5,10,BLUE);
 			skills[5][0] = new SkillBox(icons.get("bioengineer11"),"Ascent to Valhalla","Increases juggle attack launch height.",
 				null,2.5,10,CYAN);
 			
 			skills[2][1] = new SkillBox(icons.get("bioengineer3"),"Warrior of the Battle-Oar","Increases 2-Handed weapon damage.",
 				null,2.5,10,CYAN);
 			skills[3][1] = new SkillBox(icons.get("bioengineer6"),"Ward of the NORNs","Spider: Deploys a protective shield that",
-				"absorbs damage.",3,10,YELLOW);
+				"absorbs damage.","Increases deployment duration.",3,10,YELLOW);
 			skills[4][1] = new SkillBox(icons.get("bioengineer9"),"Idunn's Favor","Battle Cry: Performs a large delayed heal",
-				"and clears negative effects.",5,10,BLUE);
+				"and clears negative effects.","Increases heal amount.",5,10,BLUE);
 			skills[5][1] = new SkillBox(icons.get("bioengineer12"),"Cellular Rebonding (Group Skill)","Increases maximum hit points.",
 				null,1,10,GREEN);
 			
 			skills[2][2] = new SkillBox(icons.get("bioengineer4"),"Warrior of Tyr's Way","Increases 1-Handed weapon damage.",
 				null,2.5,10,CYAN);
 			skills[3][2] = new SkillBox(icons.get("bioengineer7"),"Gifts of Idunn","Spider: Deploys a mine that heals any allies",
-				"in detonation range.",5,10,YELLOW);
+				"in detonation range.","Increases heal amount.",5,10,YELLOW);
 			skills[4][2] = new SkillBox(icons.get("bioengineer10"),"Idunn's Wish","Battle Cry: Enhances resistances, clears negative",
-				"effects, and enhances offensive stats.",2,10,BLUE);
+				"effects, and enhances offensive stats.","Increases bonus and duration.",2,10,BLUE);
 			skills[5][2] = new SkillBox(icons.get("bioengineer13"),"Electrified Blade","Increases chance of inflicting Lightning",
 				"damage during melee attacks.",1,10,CYAN);
 		} else if(classString.equals("Champion")) {
@@ -155,26 +156,26 @@ class ClassPanel extends JPanel implements ActionListener, java.io.Serializable,
 			skills[3][0] = new SkillBox(icons.get("champion5"),"Lament for the Battle-Slain","Increases Finisher move damage.",
 				null,3,10,CYAN);
 			skills[4][0] = new SkillBox(icons.get("champion6"),"Thermal Induction Mine","Spider: Deploys a mine that explodes",
-				"on contact and does fire damage.",5,10,YELLOW);
+				"on contact and does fire damage.","Increases damage and radius.",5,10,YELLOW);
 			skills[5][0] = new SkillBox(icons.get("champion9"),"One Will Rise Above","Battle Cry: Increases air melee attack damage.",
-				"Also affects co-op party.",15,10,BLUE);
+				"Also affects co-op party.","Increases damage and duration.",15,10,BLUE);
 			skills[6][0] = new SkillBox(icons.get("champion12"),"Warrior of Blood-Eel","Increases sword damage.",null,3,10,CYAN);
 			
 			skills[2][1] = new SkillBox(icons.get("champion3"),"Asgard's Fury","Increases air melee attack damage.",
 				null,3,10,CYAN);
 			skills[4][1] = new SkillBox(icons.get("champion7"),"Feeder of Ravens","Spider: Deploys a concussion mine that explodes",
-				"on contact, launching enemies airborne.",2.5,10,YELLOW);
+				"on contact, launching enemies airborne.","Increases launch height.",2.5,10,YELLOW);
 			skills[5][1] = new SkillBox(icons.get("champion10"),"Valiant's Might","Battle Cry: All melee attacks cause enemy juggle.",
-				"Also affects co-op party.",3,10,BLUE);
+				"Also affects co-op party.","Increases duration.",3,10,BLUE);
 			skills[6][1] = new SkillBox(icons.get("champion13"),"Ascent to Valhalla","Increases juggle attack launch height.",
 				null,2.5,10,CYAN);
 			
 			skills[2][2] = new SkillBox(icons.get("champion4"),"Kinship of Gungnir","Increases Pistol weapon damage.",
 				null,4,10,CYAN);
 			skills[4][2] = new SkillBox(icons.get("champion8"),"Tree of Raining-Iron","Spider: Deploys a chain turret.",
-				null,5,10,YELLOW);
-			skills[5][2] = new SkillBox(icons.get("champion11"),"Storm of Mortal Wounds","All enemies will be softened and exposed",
-				"to critical strikes. Affects party.",2,10,BLUE);
+				null,"Increases damage.",5,10,YELLOW);
+			skills[5][2] = new SkillBox(icons.get("champion11"),"Storm of Mortal Wounds","Battle Cry: All enemies will be softened and",
+				"exposed to critical strikes. Affects party.","Increases duration.",2,10,BLUE);
 			skills[6][2] = new SkillBox(icons.get("champion14"),"Stopping Power","Increases Slug ammunition damage.",null,4,10,CYAN);
 			
 			off = 1;
@@ -185,27 +186,27 @@ class ClassPanel extends JPanel implements ActionListener, java.io.Serializable,
 			skills[2][0] = new SkillBox(icons.get("commando2"),"Pinning Shot","Increases chance that Ballistic shots will",
 				"temporarily root enemies hit.",1,10,CYAN);
 			skills[3][0] = new SkillBox(icons.get("commando5"),"Bullet-Tree","Spider: Deploys point-defense turret capable of",
-				"shooting down incoming missiles.",5,10,YELLOW);
+				"shooting down incoming missiles.","Increases damage and duration.",5,10,YELLOW);
 			skills[4][0] = new SkillBox(icons.get("commando8"),"Smoothbore","Battle Cry: All Ballistic shots have knockback.",
-				"Also affects co-op party.",20,10,BLUE);
+				"Also affects co-op party.","Increases duration.",20,10,BLUE);
 			skills[5][0] = new SkillBox(icons.get("commando11"),"Ballistic Telemetry Feedback","Increases Ballistic weapon range.",
 				null,2,10,CYAN);
 			
 			skills[2][1] = new SkillBox(icons.get("commando3"),"Rain of Iron","Increases Slug ammunition rate of fire.",
 				null,3,10,CYAN);
 			skills[3][1] = new SkillBox(icons.get("commando6"),"Cluster Munitions","Spider: Deploys a cluster mine that explodes",
-				"upon contact.",5,10,YELLOW);
+				"upon contact.","Increases radius and duration.",5,10,YELLOW);
 			skills[4][1] = new SkillBox(icons.get("commando9"),"Lightning Cascade","Battle Cry: Attacks will include delayed detionation",
-				"explosive damage. Affects party.",10,10,BLUE);
+				"explosive damage. Affects party.","Increases damage and duration.",10,10,BLUE);
 			skills[5][1] = new SkillBox(icons.get("commando12"),"Delayed Fragmentation Warheads","Increases chance Ballistic shots will do",
 				"explosive damage.",1,10,CYAN);
 			
 			skills[2][2] = new SkillBox(icons.get("commando4"),"Adept of the Burning Spear","Increases Plasma ammunition damage.",
 				null,3,10,CYAN);
 			skills[3][2] = new SkillBox(icons.get("commando7"),"Tree of Shrieking-Flame","Spider: Deploys a Plasma turret.",
-				null,5,10,YELLOW);
+				null,"Increases damage.",5,10,YELLOW);
 			skills[4][2] = new SkillBox(icons.get("commando10"),"Cut to the Bone","Battle Cry: Increases Ballistic damage.",
-				"Also affects co-op party.",10,10,BLUE);
+				"Also affects co-op party.","Increases damage and duration.",10,10,BLUE);
 			skills[5][2] = new SkillBox(icons.get("commando13"),"Gift of Gungnir","Increases Rifle damage.",
 				null,3,10,CYAN);
 		} else if(classString.equals("Defender")) {
@@ -214,33 +215,33 @@ class ClassPanel extends JPanel implements ActionListener, java.io.Serializable,
 			
 			skills[2][0] = new SkillBox(icons.get("defender2"),"Enthalpy Reduction Attack","Increases chance of infliciting",
 				"Ice damage during melee attacks.",.5,10,CYAN);
-			skills[3][0] = new SkillBox(icons.get("defender5"),"Enthalpy Reduction Mines","Spider: Deploys an Ice mine which freezes",
-				"all in range upon detonation.",5,10,YELLOW);
+			skills[3][0] = new SkillBox(icons.get("defender5"),"Enthalpy Reduction Mines","Spider: Deploys an Ice mine that explodes",
+				"upon contact, freezing all in radius.","Increases radius and duration.",5,10,YELLOW);
 			skills[4][0] = new SkillBox(icons.get("defender8"),"Fimbulwinter's Numbing Touch","Battle Cry: Produces a shield which freezes",
-				"enemies upon contact.",6,10,BLUE);
-			skills[5][0] = new SkillBox(icons.get("defender11"),"Adept of the Light Spear","Increases Laser weapon damage.",
+				"enemies upon contact. Affects party.","Increases duration.",6,10,BLUE);
+			skills[5][0] = new SkillBox(icons.get("defender11"),"Adept of the Light-Spear","Increases Laser weapon damage.",
 				null,3,10,CYAN);
 			
 			skills[2][1] = new SkillBox(icons.get("defender3"),"Grim Resolve","Increases chance that damage from a killing",
 				"blow will be completely deflected.",5,10,CYAN);
 			skills[3][1] = new SkillBox(icons.get("defender6"),"Ward of the NORNs","Spider: Deploys a protective shield that",
-				"absorbs damage.",3,10,YELLOW);
+				"absorbs damage.","Increases deployment duration.",3,10,YELLOW);
 			skills[4][1] = new SkillBox(icons.get("defender9"),"Reversal of Wyrds","Battle Cry: Enemy status effects are reflected back.",
-				"Also affects co-op party.",10,10,BLUE);
+				"Also affects co-op party.","Increases duration.",10,10,BLUE);
 			skills[5][1] = new SkillBox(icons.get("defender12"),"Tyr's Best Work","Increases the defensive bonus of",
 				"equipped armor.",1,10,CYAN);
 			
 			skills[2][2] = new SkillBox(icons.get("defender4"),"The Berserker's Grief","Increases chance that 100% of melee damage",
 				"is reflected back to the attacker.",1,10,CYAN);
 			skills[3][2] = new SkillBox(icons.get("defender7"),"Tree of Scorching Light","Spider: Deploys a Laser turret.",
-				null,3,10,YELLOW);
+				null,"Increases damage.",3,10,YELLOW);
 			skills[4][2] = new SkillBox(icons.get("defender10"),"Egil's Blessing","Battle Cry: Taunts all neaby enemies to focus",
-				"their attacks on you.",10,10,BLUE);
+				"their attacks on you.","Increases effectiveness.",10,10,BLUE);
 			skills[5][2] = new SkillBox(icons.get("defender13"),"Warrior of the Iron Fist","Increases Hammer weapon damage.",
 				null,3,10,CYAN);
 		}
 		skills[6+off][1] = new SkillBox(icons.get("fenrir"),"Spirit of Fenrir","Sentient Power: gain massive amounts of combo by",
-				"unleashing the power of Fenrir on nearby enemies.",30,10,CYAN);
+				"unleashing the power of Fenrir on nearby enemies.","Increases duration.",30,10,CYAN);
 		skills[0][2].setEnabled(true);
 		skills[0][2].setVisible(false);
 		skills[1][1].setEnabled(true);
@@ -327,7 +328,7 @@ class ClassPanel extends JPanel implements ActionListener, java.io.Serializable,
 	public void actionPerformed(ActionEvent e){
 		String name = e.getActionCommand();
 		if(name.equals("Export"))
-			exportAsPNG();
+			exportAsPNG(getParent());
 		if(name.equals("Reset"))
 			zero();
 		if(e.getSource() instanceof SkillBox) {
@@ -456,8 +457,8 @@ class ClassPanel extends JPanel implements ActionListener, java.io.Serializable,
 				export.alignPoints.add(alignSkills[k][j].getPoints());
 		return export;
 	}
-	public boolean exportAsPNG() {
-		if(saveImage.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+	public boolean exportAsPNG(Component parent) {
+		if(saveImage.showSaveDialog(parent) == JFileChooser.APPROVE_OPTION) {
 			File file = saveImage.getSelectedFile();
 			if(!filter.acceptFile(file))
 				file = new File(file.getPath()+".png");
@@ -465,9 +466,9 @@ class ClassPanel extends JPanel implements ActionListener, java.io.Serializable,
 				String[] choices = new String[] {"Overwrite","Choose another file","Cancel"};
 				int choice = JOptionPane.showOptionDialog(this,"A file with this name already exists.","Conflict!",
 					JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,
-					icons.get("doc save"),choices,choices[1]);
+					icons.get("dialog warning"),choices,choices[1]);
 				if(choice == 2 || choice == JOptionPane.CLOSED_OPTION) return false;
-				if(choice == 1) return exportAsPNG();
+				if(choice == 1) return exportAsPNG(this);
 			}
 			try {
 				Dimension treesSize = trees.getSize();
@@ -507,18 +508,18 @@ class ClassPanel extends JPanel implements ActionListener, java.io.Serializable,
 	}
 	public void mousePressed(MouseEvent e) {
 		SkillBox box = (SkillBox)e.getSource();
-		if(!box.built() || !box.isEnabled() || !box.isVisible()) return;
-		if(!e.isAltDown())
+		if(!box.built() || !box.isEnabled() || !box.isVisible()){ return;
+		} else if(!e.isAltDown()) {
 			increasePoints(!(e.isMetaDown() || e.isControlDown()),(SkillBox)e.getSource());
-		if(e.isAltDown() && (e.isMetaDown() || e.isControlDown())) {
+		} else if(e.isAltDown() && (e.isMetaDown() || e.isControlDown())) {
 			box.getPopup().show(box,e.getX(),e.getY());
-		}
-		if(e.isAltDown() && (!e.isMetaDown() && !e.isControlDown())) {
+		} else if(e.isAltDown() && (!e.isMetaDown() && !e.isControlDown())) {
 			Object input = JOptionPane.showInputDialog(
 				box,
-				box.getFullDescription()+"\n\nSet point value to?  Current:"+box.getSpinnerLabelText(),
+				box.getFullDescription()+"\n"+((box.getLevelBonus() != null) ? "\nLevel Bonus: "+box.getLevelBonus() : "")
+					+"\nSet point value to?  Current:"+box.getSpinnerLabelText(),
 				box.getTitle(),
-				JOptionPane.QUESTION_MESSAGE,box.getIcon(),null,"");
+				JOptionPane.QUESTION_MESSAGE,box.getIcon(),null,box.getValue());
 			int in = 0;
 			if(input == null || ((String)input).trim().equals(""))
 				return;
